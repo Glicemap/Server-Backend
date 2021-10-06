@@ -1,10 +1,12 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.DatesWithMeasuresDTO;
+import lombok.Builder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Builder
 @Component
 public class DatesWithMeasuresBuilder {
     private List<String> dates;

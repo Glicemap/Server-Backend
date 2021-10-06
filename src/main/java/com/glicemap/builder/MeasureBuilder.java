@@ -1,8 +1,10 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.MeasureDTO;
+import lombok.Builder;
 import org.springframework.stereotype.Component;
 
+@Builder
 @Component
 public class MeasureBuilder {
     private String sugarLevel;
