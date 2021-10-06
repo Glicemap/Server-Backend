@@ -1,12 +1,10 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.MeasureDTO;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 
-@Builder
 @Component
-public class MeasureBuilder {
+public final class MeasureBuilder {
     private String sugarLevel;
     private String insulin;
     private String situation;
@@ -33,11 +31,11 @@ public class MeasureBuilder {
     }
 
     public MeasureDTO build() {
-        MeasureDTO measure = new MeasureDTO();
-        measure.setSugarLevel(this.sugarLevel);
-        measure.setInsulin(this.insulin);
-        measure.setSituation(this.situation);
-        measure.setObservations(this.observations);
-        return measure;
+        MeasureDTO measureDTO = new MeasureDTO();
+        measureDTO.setSugarLevel(sugarLevel);
+        measureDTO.setInsulin(insulin);
+        measureDTO.setSituation(situation);
+        measureDTO.setObservations(observations);
+        return measureDTO;
     }
 }

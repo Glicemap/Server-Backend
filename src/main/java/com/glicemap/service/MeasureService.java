@@ -3,7 +3,10 @@ package com.glicemap.service;
 import com.glicemap.builder.DailyMeasuresBuilder;
 import com.glicemap.builder.DatesWithMeasuresBuilder;
 import com.glicemap.builder.MeasureBuilder;
-import com.glicemap.dto.*;
+import com.glicemap.dto.DailyMeasuresDTO;
+import com.glicemap.dto.DatesWithMeasuresDTO;
+import com.glicemap.dto.MeasureDTO;
+import com.glicemap.dto.PostMeasureDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,7 @@ public class MeasureService {
     @Autowired
     private MeasureBuilder measureBuilder;
 
-    public DatesWithMeasuresDTO getDaysWithMeasure(String documentNumber, String date){
+    public DatesWithMeasuresDTO getDaysWithMeasure(String documentNumber, String date) {
         //aqui faz a busca no banco
         String month = date.split("-")[1];
         List<String> listDates = new ArrayList<>();
@@ -45,7 +48,7 @@ public class MeasureService {
         return datesWithMeasuresBuilder.setDates(listDates).build();
     }
 
-    public DailyMeasuresDTO getDailyMeasures(String documentNumber, String date){
+    public DailyMeasuresDTO getDailyMeasures(String documentNumber, String date) {
         //Aqui faz a busca no banco de dados
         List<MeasureDTO> measures = new ArrayList<>();
 
@@ -70,7 +73,7 @@ public class MeasureService {
         return dailyMeasuresBuilder.setMeasures(measures).build();
     }
 
-    public Boolean postMeasure(PostMeasureDTO postMeasureDTO){
+    public Boolean postMeasure(PostMeasureDTO postMeasureDTO) {
         //aqui faria a inserção no banco
         return Boolean.TRUE;
     }

@@ -11,7 +11,7 @@ public class UserService {
     @Autowired
     private UserBuilder userBuilder;
 
-    public UserDTO getUserInfo(String documentNumber){
+    public UserDTO getUserInfo(String documentNumber) {
         // aqui buscariamos na base pelo CPF
         User user = new User();
         user.setDocumentNumber(documentNumber);

@@ -1,11 +1,7 @@
 package com.glicemap.model;
 
-import com.glicemap.builder.UserBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 // @Table(name = "user")

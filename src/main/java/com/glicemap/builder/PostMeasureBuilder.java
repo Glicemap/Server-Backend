@@ -2,10 +2,8 @@ package com.glicemap.builder;
 
 import com.glicemap.dto.MeasureDTO;
 import com.glicemap.dto.PostMeasureDTO;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 
-@Builder
 @Component
 public final class PostMeasureBuilder {
     private String documentNumber;

@@ -1,9 +1,9 @@
 package com.glicemap.controller;
 
-import com.glicemap.builder.DailyMeasuresBuilder;
-import com.glicemap.builder.DatesWithMeasuresBuilder;
-import com.glicemap.builder.MeasureBuilder;
-import com.glicemap.dto.*;
+import com.glicemap.dto.DailyMeasuresDTO;
+import com.glicemap.dto.DatesWithMeasuresDTO;
+import com.glicemap.dto.PostMeasureDTO;
+import com.glicemap.dto.UserDTO;
 import com.glicemap.service.MeasureService;
 import com.glicemap.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RestController

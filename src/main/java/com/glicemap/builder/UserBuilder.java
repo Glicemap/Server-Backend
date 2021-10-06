@@ -2,10 +2,8 @@ package com.glicemap.builder;
 
 import com.glicemap.dto.UserDTO;
 import com.glicemap.model.User;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 
-@Builder
 @Component
 public final class UserBuilder {
     private String documentNumber;
