@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class DailyMeasuresDTO implements Serializable {
+    private static final long serialVersionUID = 7568303989409707752L;
     @JsonProperty("measures")
     private List<MeasureDTO> measures;
 }

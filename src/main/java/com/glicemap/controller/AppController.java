@@ -54,7 +54,7 @@ public class AppController {
         listDates.add("2021-10-30");
         listDates.add("2021-10-31");
 
-        DatesWithMeasuresDTO datesWithMeasuresDTO = datesWithMeasuresBuilder.build(listDates);
+        DatesWithMeasuresDTO datesWithMeasuresDTO = datesWithMeasuresBuilder.setDates(listDates).build();
 
         return new ResponseEntity<>(datesWithMeasuresDTO, HttpStatus.OK);
     }
@@ -62,11 +62,26 @@ public class AppController {
     @GetMapping("/searchMeasures/day")
     public ResponseEntity<DailyMeasuresDTO> searchMeasuresDay(@RequestHeader("documentNumber") String documentNumber, @RequestHeader("date") String date) {
         List<MeasureDTO> measures = new ArrayList<>();
-        measures.add(measureBuilder.build("110", "2", "Antes do almoço", "Medi depois de uma caminhada"));
-        measures.add(measureBuilder.build("200", "3", "Antes do lanche da tarde", null));
-        measures.add(measureBuilder.build("140", "1", "Depois da janta", "Medi logo antes de dormir"));
 
-        DailyMeasuresDTO dailyMeasuresDTO = dailyMeasuresBuilder.build(measures);
+        measures.add(measureBuilder.setInsulin("2")
+                .setSugarLevel("110")
+                .setSituation("Antes do almoço")
+                .setObservations("Medi depois de uma caminhada")
+                .build());
+
+        measures.add(measureBuilder.setInsulin("3")
+                .setSituation("Antes do lanche da tarde")
+                .setObservations(null)
+                .setSugarLevel("200")
+                .build());
+
+        measures.add(measureBuilder.setInsulin("1")
+                .setSituation("Depois da janta")
+                .setObservations("Medi logo antes de dormir")
+                .setSugarLevel("140")
+                .build());
+
+        DailyMeasuresDTO dailyMeasuresDTO = dailyMeasuresBuilder.setMeasures(measures).build();
 
         return new ResponseEntity<>(dailyMeasuresDTO, HttpStatus.OK);
     }

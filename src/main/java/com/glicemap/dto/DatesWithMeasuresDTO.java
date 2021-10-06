@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class DatesWithMeasuresDTO implements Serializable {
+    private static final long serialVersionUID = -6477215503283491105L;
     @JsonProperty("dates")
     private List<String> dates;
 }

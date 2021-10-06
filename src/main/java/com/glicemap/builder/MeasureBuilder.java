@@ -1,21 +1,41 @@
 package com.glicemap.builder;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glicemap.dto.DailyMeasuresDTO;
 import com.glicemap.dto.MeasureDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class MeasureBuilder {
-    public MeasureDTO build(String sugarLevel, String insulin, String situation, String observations){
+    private String sugarLevel;
+    private String insulin;
+    private String situation;
+    private String observations;
+
+    public MeasureBuilder setSugarLevel(String sugarLevel) {
+        this.sugarLevel = sugarLevel;
+        return this;
+    }
+
+    public MeasureBuilder setInsulin(String insulin) {
+        this.insulin = insulin;
+        return this;
+    }
+
+    public MeasureBuilder setSituation(String situation) {
+        this.situation = situation;
+        return this;
+    }
+
+    public MeasureBuilder setObservations(String observations) {
+        this.observations = observations;
+        return this;
+    }
+
+    public MeasureDTO build() {
         MeasureDTO measure = new MeasureDTO();
-        measure.setSugarLevel(sugarLevel);
-        measure.setInsulin(insulin);
-        measure.setSituation(situation);
-        measure.setObservations(observations);
+        measure.setSugarLevel(this.sugarLevel);
+        measure.setInsulin(this.insulin);
+        measure.setSituation(this.situation);
+        measure.setObservations(this.observations);
         return measure;
     }
 }

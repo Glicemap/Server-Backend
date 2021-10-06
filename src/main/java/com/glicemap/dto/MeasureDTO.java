@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 @Data
 public class MeasureDTO implements Serializable {
+
+    private static final long serialVersionUID = 4064378649469122652L;
+
     @JsonProperty("sugarLevel")
     private String sugarLevel;
 
