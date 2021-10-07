@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 @RestController
 @RequestMapping("/app")
 public class AppController {
@@ -66,13 +67,13 @@ public class AppController {
                              @RequestHeader("documentNumber") String documentNumber,
                              @RequestHeader("dateBegin") String dateBegin,
                              @RequestHeader("dateEnd") String dateEnd) throws DocumentException, IOException {
-        
+
         response.setContentType("application/pdf");
 
         DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=relatorio_" + currentDateTime  + ".pdf";
+        String headerValue = "attachment; filename=relatorio_" + currentDateTime + ".pdf";
 
         response.setHeader(headerKey, headerValue);
 

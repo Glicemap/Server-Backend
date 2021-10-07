@@ -13,22 +13,22 @@ public enum MeasureSituations {
     DEPOIS_JANTAR("Depois do jantar"),
     ANTES_DORMIR("Antes de dormir");
 
-    private String situation;
+    private final String situation;
 
     MeasureSituations(String situation) {
         this.situation = situation;
     }
 
-    public String getString() {
-        return situation;
-    }
-
-    public static MeasureSituations getEnum(String situation){
+    public static MeasureSituations getEnum(String situation) {
         for (MeasureSituations s : MeasureSituations.values()) {
             if (s.situation.equalsIgnoreCase(situation)) {
                 return s;
             }
         }
         return null;
+    }
+
+    public String getString() {
+        return situation;
     }
 }
