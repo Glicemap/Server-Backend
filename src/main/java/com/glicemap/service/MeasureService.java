@@ -52,6 +52,12 @@ public class MeasureService {
         //Aqui faz a busca no banco de dados
         List<MeasureDTO> measures = new ArrayList<>();
 
+        measures.add(measureBuilder.setInsulin("4")
+                .setSituation("Antes do café da manhã")
+                .setObservations(null)
+                .setSugarLevel("299")
+                .build());
+
         measures.add(measureBuilder.setInsulin("2")
                 .setSugarLevel("110")
                 .setSituation("Antes do almoço")
@@ -65,9 +71,15 @@ public class MeasureService {
                 .build());
 
         measures.add(measureBuilder.setInsulin("1")
-                .setSituation("Depois da janta")
-                .setObservations("Medi logo antes de dormir")
+                .setSituation("Depois do jantar")
+                .setObservations(null)
                 .setSugarLevel("140")
+                .build());
+
+        measures.add(measureBuilder.setInsulin("0")
+                .setSituation("Antes de dormir")
+                .setObservations("Tomei um copo de iogurte antes de dormir")
+                .setSugarLevel("150")
                 .build());
 
         return dailyMeasuresBuilder.setMeasures(measures).build();
