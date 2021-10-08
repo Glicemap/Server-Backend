@@ -81,7 +81,7 @@ public class MeasureService {
         measures.add(measureBuilder.setInsulin("1").setSituation(MeasureSituations.ANTES_DORMIR.getString())
                 .setObservations("Medi logo antes de dormir").setSugarLevel("140").build());
 
-        return dailyMeasuresBuilder.setMeasures(measures).build();
+        return dailyMeasuresBuilder.setMeasures(measures).setDate(date).build();
     }
 
     public Boolean postMeasure(PostMeasureDTO postMeasureDTO) {
