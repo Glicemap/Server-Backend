@@ -9,6 +9,12 @@ import java.util.List;
 @Component
 public class DailyMeasuresBuilder {
     private List<MeasureDTO> measures;
+    private String date;
+
+    public DailyMeasuresBuilder setDate(String date) {
+        this.date = date;
+        return this;
+    }
 
     public DailyMeasuresBuilder setMeasures(List<MeasureDTO> measures) {
         this.measures = measures;
@@ -18,6 +24,7 @@ public class DailyMeasuresBuilder {
     public DailyMeasuresDTO build() {
         DailyMeasuresDTO dailyMeasuresDTO = new DailyMeasuresDTO();
         dailyMeasuresDTO.setMeasures(this.measures);
+        dailyMeasuresDTO.setDate(this.date);
         return dailyMeasuresDTO;
     }
 }
