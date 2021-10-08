@@ -12,6 +12,7 @@ public class MeasureDTO implements Serializable {
 
     @JsonProperty("sugarLevel")
     private String sugarLevel;
+
     @JsonProperty("insulin")
     private String insulin;
 
