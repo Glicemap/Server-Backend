@@ -91,14 +91,13 @@ public class AppController {
         return new ResponseEntity<>(measureService.postMeasure(postMeasureDTO), HttpStatus.OK);
     }
 
-    //TODO - Colocar Infos do Médico
     @ApiOperation(value = "Retorna um json com informações do médico e do usuário")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna json com informações"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/getInfo/user", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<UserDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
+    @RequestMapping(value = "/getInfo", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<UserMedicInfoDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
         logger.info("AppController - /getInfo/user called! documentNumber = [{}]", documentNumber);
         return new ResponseEntity<>(informationService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
