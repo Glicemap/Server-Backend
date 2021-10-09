@@ -3,6 +3,8 @@ package com.glicemap.controller;
 import com.glicemap.dto.DailyMeasuresDTO;
 import com.glicemap.dto.DatesWithMeasuresDTO;
 import com.glicemap.dto.PostMeasureDTO;
+import com.glicemap.dto.UserMedicInfoDTO;
+import com.glicemap.service.InformationService;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.service.MeasureService;
@@ -37,6 +39,9 @@ public class AppController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private InformationService informationService;
 
     @ApiOperation(value = "Retorna um texto para teste da controller")
     @ApiResponses({
@@ -95,7 +100,7 @@ public class AppController {
     @RequestMapping(value = "/getInfo/user", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<UserDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
         logger.info("AppController - /getInfo/user called! documentNumber = [{}]", documentNumber);
-        return new ResponseEntity<>(userService.getUserInfo(documentNumber), HttpStatus.OK);
+        return new ResponseEntity<>(informationService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Retorna um pdf no padrão das UBS do relatório glicemico no período informado")
