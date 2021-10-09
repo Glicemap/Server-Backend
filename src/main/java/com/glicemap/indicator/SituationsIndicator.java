@@ -1,6 +1,6 @@
-package com.glicemap.enumerates;
+package com.glicemap.indicator;
 
-public enum MeasureSituations {
+public enum SituationsIndicator {
     ANTES_CAFE("Antes do café da manhã"),
     DEPOIS_CAFE("Depois do café da manhã"),
     ANTES_LANCHE_MANHA("Antes do lanche da manhã"),
@@ -15,12 +15,12 @@ public enum MeasureSituations {
 
     private final String situation;
 
-    MeasureSituations(String situation) {
+    SituationsIndicator(String situation) {
         this.situation = situation;
     }
 
-    public static MeasureSituations getEnum(String situation) {
-        for (MeasureSituations s : MeasureSituations.values()) {
+    public static SituationsIndicator getEnum(String situation) {
+        for (SituationsIndicator s : SituationsIndicator.values()) {
             if (s.situation.equalsIgnoreCase(situation)) {
                 return s;
             }
