@@ -3,7 +3,8 @@ package com.glicemap.controller;
 import com.glicemap.dto.DailyMeasuresDTO;
 import com.glicemap.dto.DatesWithMeasuresDTO;
 import com.glicemap.dto.PostMeasureDTO;
-import com.glicemap.dto.UserDTO;
+import com.glicemap.dto.UserMedicInfoDTO;
+import com.glicemap.service.InformationService;
 import com.glicemap.service.MeasureService;
 import com.glicemap.service.ReportService;
 import com.glicemap.service.UserService;
@@ -32,6 +33,9 @@ public class AppController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private InformationService informationService;
+
     @GetMapping("/hello")
     public ResponseEntity<String> index(@RequestParam(value = "name", defaultValue = "Mundo") String name) {
         return new ResponseEntity<>(String.format("Olá, %s! Você está no App", name), HttpStatus.OK);
@@ -56,10 +60,9 @@ public class AppController {
         return new ResponseEntity<>(measureService.postMeasure(postMeasureDTO), HttpStatus.OK);
     }
 
-    //TODO - Colocar Infos do Médico
-    @GetMapping("/getInfo/user")
-    public ResponseEntity<UserDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
-        return new ResponseEntity<>(userService.getUserInfo(documentNumber), HttpStatus.OK);
+    @GetMapping("/getInfo")
+    public ResponseEntity<UserMedicInfoDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
+        return new ResponseEntity<>(informationService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
     @GetMapping("/exportReport")

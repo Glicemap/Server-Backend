@@ -27,4 +27,6 @@ public class UserDTO implements Serializable {
     private int sugarMin;
     @JsonProperty("sugarMax")
     private int sugarMax;
+    @JsonProperty("crmMedic")
+    private String crmMedic;
 }

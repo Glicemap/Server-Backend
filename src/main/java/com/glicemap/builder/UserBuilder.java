@@ -15,6 +15,7 @@ public final class UserBuilder {
     private float weight;
     private int sugarMin;
     private int sugarMax;
+    private String crmMedic;
 
     public UserBuilder setDocumentNumber(String documentNumber) {
         this.documentNumber = documentNumber;
@@ -61,6 +62,11 @@ public final class UserBuilder {
         return this;
     }
 
+    public UserBuilder setCRMMedic(String crmMedic) {
+        this.crmMedic = crmMedic;
+        return this;
+    }
+
     public UserDTO build() {
         UserDTO userDTO = new UserDTO();
         userDTO.setDocumentNumber(documentNumber);
@@ -72,6 +78,7 @@ public final class UserBuilder {
         userDTO.setWeight(weight);
         userDTO.setSugarMin(sugarMin);
         userDTO.setSugarMax(sugarMax);
+        userDTO.setCrmMedic(crmMedic);
         return userDTO;
     }
 
@@ -86,6 +93,7 @@ public final class UserBuilder {
         userDTO.setWeight(user.getWeight());
         userDTO.setSugarMin(user.getSugarMin());
         userDTO.setSugarMax(user.getSugarMax());
+        userDTO.setCrmMedic(user.getMedic().getCRM());
         return userDTO;
     }
 }

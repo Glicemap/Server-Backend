@@ -1,7 +1,6 @@
 package com.glicemap.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 // @Table(name = "user")
@@ -24,6 +23,10 @@ public class User {
     private int sugarMin;
 
     private int sugarMax;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "CRM_Medic", nullable = true)
+    private Medic medic;
 
     public String getDocumentNumber() {
         return documentNumber;
@@ -95,5 +98,13 @@ public class User {
 
     public void setSugarMax(int sugarMax) {
         this.sugarMax = sugarMax;
+    }
+
+    public Medic getMedic() {
+        return medic;
+    }
+
+    public void setMedic(Medic medic) {
+        this.medic = medic;
     }
 }
