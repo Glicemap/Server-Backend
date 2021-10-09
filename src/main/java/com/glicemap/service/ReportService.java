@@ -2,11 +2,14 @@ package com.glicemap.service;
 
 import com.glicemap.dto.DailyMeasuresDTO;
 import com.glicemap.dto.MeasureDTO;
-import com.glicemap.enumerates.MeasureSituations;
+import com.glicemap.exception.BaseBusinessException;
+import com.glicemap.indicator.SituationsIndicator;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Service
 public class ReportService {
+
+    Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     public ReportService() {
     }
@@ -51,7 +56,6 @@ public class ReportService {
         cell.setPhrase(new Phrase("Antes de Dormir", font));
         table.addCell(cell);
 
-
         cell.setPadding(3);
         font = FontFactory.getFont(FontFactory.HELVETICA);
         font.setSize(10);
@@ -82,169 +86,36 @@ public class ReportService {
 
         for (DailyMeasuresDTO dailyMeasures : measures) {
             cell.setColspan(1);
-            cell.setPhrase(new Phrase(dailyMeasures.getDate().split("-")[2] + "/" + dailyMeasures.getDate().split("-")[1] + "/" + dailyMeasures.getDate().split("-")[0], font));
+            String[] dateSplited = dailyMeasures.getDate().split("-");
+            cell.setPhrase(new Phrase(String.format("%s/%s/%s", dateSplited[2], dateSplited[1], dateSplited[0]), font));
             table.addCell(cell);
 
-            boolean found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_CAFE.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
+            for (SituationsIndicator situation : SituationsIndicator.values()) {
+                if (SituationsIndicator.ANTES_DORMIR.equals(situation)) {
+                    cell.setColspan(2);
                 }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.DEPOIS_CAFE.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
+                boolean found = false;
+                for (MeasureDTO measure : dailyMeasures.getMeasures()) {
+                    if (situation.equals(SituationsIndicator.getEnum(measure.getSituation()))) {
+                        cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
+                        table.addCell(cell);
+                        found = true;
+                        break;
+                    }
                 }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_LANCHE_MANHA.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
+                if (!found) {
+                    cell.setPhrase(new Phrase("-", font));
                     table.addCell(cell);
-                    found = true;
-                    break;
                 }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.DEPOIS_LANCHE_MANHA.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_ALMOCO.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.DEPOIS_ALMOCO.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_LANCHE_TARDE.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.DEPOIS_LANCHE_TARDE.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_JANTAR.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.DEPOIS_JANTAR.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
-            }
-
-            cell.setColspan(2);
-            found = false;
-            for (MeasureDTO measure : dailyMeasures.getMeasures()) {
-                if (MeasureSituations.ANTES_DORMIR.equals(MeasureSituations.getEnum(measure.getSituation()))) {
-                    cell.setPhrase(new Phrase(measure.getSugarLevel(), font));
-                    table.addCell(cell);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                cell.setPhrase(new Phrase("-", font));
-                table.addCell(cell);
             }
         }
     }
 
-    public void export(HttpServletResponse response, List<DailyMeasuresDTO> measures) throws DocumentException, IOException {
+
+    public void export(HttpServletResponse response, List<DailyMeasuresDTO> measures) throws BaseBusinessException {
         Document document = null;
         try {
+            logger.info("ReportService- Building document! measures = [{}]", measures);
             document = new Document(PageSize.A4.rotate());
 
             PdfWriter.getInstance(document, response.getOutputStream());
@@ -263,15 +134,14 @@ public class ReportService {
             table.setWidths(new float[]{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2});
             writeTableHeader(table);
             writeTableData(table, measures);
-
             document.add(table);
 
         } catch (IOException errorIO) {
-            //TODO - logar erro e gerar erro próprio
-            throw errorIO;
+            logger.error("ReportService- IOException error building document! e = [{}]", errorIO.getMessage());
+            throw new BaseBusinessException("PDF_EXPORT_ERROR_0001");
         } catch (DocumentException errorDoc) {
-            //TODO -logar erro e gerar erro próprio
-            throw errorDoc;
+            logger.error("ReportService- DocumentException error building document! e = [{}]", errorDoc.getMessage());
+            throw new BaseBusinessException("PDF_EXPORT_ERROR_0002");
         } finally {
             if (document != null) document.close();
         }
