@@ -7,7 +7,7 @@ import com.glicemap.dto.DailyMeasuresDTO;
 import com.glicemap.dto.DatesWithMeasuresDTO;
 import com.glicemap.dto.MeasureDTO;
 import com.glicemap.dto.PostMeasureDTO;
-import com.glicemap.enumerates.MeasureSituations;
+import com.glicemap.indicator.SituationsIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,32 +53,32 @@ public class MeasureService {
         // Aqui faz a busca no banco de dados
         List<MeasureDTO> measures = new ArrayList<>();
 
-        measures.add(measureBuilder.setInsulin("4").setSituation(MeasureSituations.ANTES_CAFE.getString())
+        measures.add(measureBuilder.setInsulin("4").setSituation(SituationsIndicator.ANTES_CAFE.getString())
                 .setObservations(null).setSugarLevel("299").build());
 
-        measures.add(measureBuilder.setInsulin("1").setSituation(MeasureSituations.DEPOIS_CAFE.getString())
+        measures.add(measureBuilder.setInsulin("1").setSituation(SituationsIndicator.DEPOIS_CAFE.getString())
                 .setObservations(null).setSugarLevel("130").build());
 
         measures.add(measureBuilder.setInsulin("2").setSugarLevel("110")
-                .setSituation(MeasureSituations.ANTES_ALMOCO.getString())
+                .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
                 .setObservations("Medi depois de uma caminhada").build());
 
         measures.add(measureBuilder.setInsulin("3")
-                .setSituation(MeasureSituations.ANTES_LANCHE_TARDE.getString()).setObservations(null)
+                .setSituation(SituationsIndicator.ANTES_LANCHE_TARDE.getString()).setObservations(null)
                 .setSugarLevel("200").build());
 
         measures.add(measureBuilder.setInsulin("2")
-                .setSituation(MeasureSituations.DEPOIS_LANCHE_TARDE.getString()).setObservations(null)
+                .setSituation(SituationsIndicator.DEPOIS_LANCHE_TARDE.getString()).setObservations(null)
                 .setSugarLevel("135").build());
 
-        measures.add(measureBuilder.setInsulin("2").setSituation(MeasureSituations.ANTES_JANTAR.getString())
+        measures.add(measureBuilder.setInsulin("2").setSituation(SituationsIndicator.ANTES_JANTAR.getString())
                 .setObservations(null).setSugarLevel("140").build());
 
-        measures.add(measureBuilder.setInsulin("0").setSituation(MeasureSituations.DEPOIS_JANTAR.getString())
+        measures.add(measureBuilder.setInsulin("0").setSituation(SituationsIndicator.DEPOIS_JANTAR.getString())
                 .setObservations("Tomei um copo de iogurte antes de dormir").setSugarLevel("150")
                 .build());
 
-        measures.add(measureBuilder.setInsulin("1").setSituation(MeasureSituations.ANTES_DORMIR.getString())
+        measures.add(measureBuilder.setInsulin("1").setSituation(SituationsIndicator.ANTES_DORMIR.getString())
                 .setObservations("Medi logo antes de dormir").setSugarLevel("140").build());
 
         return dailyMeasuresBuilder.setMeasures(measures).setDate(date).build();
@@ -103,77 +103,77 @@ public class MeasureService {
         List<MeasureDTO> measures = new ArrayList<>();
         if (option == 1) {
             measures.add(measureBuilder.setInsulin("2").setSugarLevel("110")
-                    .setSituation(MeasureSituations.ANTES_ALMOCO.getString())
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
                     .setObservations("Medi depois de uma caminhada").build());
 
             measures.add(measureBuilder.setInsulin("3")
-                    .setSituation(MeasureSituations.DEPOIS_LANCHE_TARDE.getString())
+                    .setSituation(SituationsIndicator.DEPOIS_LANCHE_TARDE.getString())
                     .setObservations(null).setSugarLevel("200").build());
 
             measures.add(measureBuilder.setInsulin("1")
-                    .setSituation(MeasureSituations.DEPOIS_JANTAR.getString())
+                    .setSituation(SituationsIndicator.DEPOIS_JANTAR.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("140").build());
 
             return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-05").build();
         } else if (option == 2) {
             measures.add(measureBuilder.setInsulin("5")
-                    .setSituation(MeasureSituations.ANTES_CAFE.getString())
+                    .setSituation(SituationsIndicator.ANTES_CAFE.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("104").build());
 
             measures.add(measureBuilder.setInsulin("1").setSugarLevel("70")
-                    .setSituation(MeasureSituations.DEPOIS_ALMOCO.getString())
+                    .setSituation(SituationsIndicator.DEPOIS_ALMOCO.getString())
                     .setObservations("Comi bolacha").build());
 
             measures.add(measureBuilder.setInsulin("3")
-                    .setSituation(MeasureSituations.ANTES_LANCHE_TARDE.getString())
+                    .setSituation(SituationsIndicator.ANTES_LANCHE_TARDE.getString())
                     .setObservations(null).setSugarLevel("116").build());
 
             measures.add(measureBuilder.setInsulin("1")
-                    .setSituation(MeasureSituations.ANTES_DORMIR.getString())
+                    .setSituation(SituationsIndicator.ANTES_DORMIR.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("850").build());
 
             return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-06").build();
         } else if (option == 3) {
             measures.add(measureBuilder.setInsulin("5")
-                    .setSituation(MeasureSituations.DEPOIS_CAFE.getString())
+                    .setSituation(SituationsIndicator.DEPOIS_CAFE.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("150").build());
 
             measures.add(measureBuilder.setInsulin("1").setSugarLevel("182")
-                    .setSituation(MeasureSituations.ANTES_LANCHE_MANHA.getString())
+                    .setSituation(SituationsIndicator.ANTES_LANCHE_MANHA.getString())
                     .setObservations(null).build());
 
             measures.add(measureBuilder.setInsulin("1").setSugarLevel("115")
-                    .setSituation(MeasureSituations.ANTES_ALMOCO.getString())
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
                     .setObservations("Comi bolacha").build());
 
             measures.add(measureBuilder.setInsulin("3")
-                    .setSituation(MeasureSituations.DEPOIS_ALMOCO.getString()).setObservations(null)
+                    .setSituation(SituationsIndicator.DEPOIS_ALMOCO.getString()).setObservations(null)
                     .setSugarLevel("130").build());
 
             measures.add(measureBuilder.setInsulin("1")
-                    .setSituation(MeasureSituations.ANTES_JANTAR.getString())
+                    .setSituation(SituationsIndicator.ANTES_JANTAR.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("170").build());
 
             return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-07").build();
         } else if (option == 4) {
             measures.add(measureBuilder.setInsulin("5")
-                    .setSituation(MeasureSituations.ANTES_CAFE.getString())
+                    .setSituation(SituationsIndicator.ANTES_CAFE.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("110").build());
 
             measures.add(measureBuilder.setInsulin("1").setSugarLevel("80")
-                    .setSituation(MeasureSituations.ANTES_ALMOCO.getString())
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
                     .setObservations("Comi bolacha").build());
 
             measures.add(measureBuilder.setInsulin("1")
-                    .setSituation(MeasureSituations.ANTES_JANTAR.getString())
+                    .setSituation(SituationsIndicator.ANTES_JANTAR.getString())
                     .setObservations("Medi logo antes de dormir").setSugarLevel("150").build());
 
             measures.add(measureBuilder.setInsulin("3")
-                    .setSituation(MeasureSituations.DEPOIS_JANTAR.getString()).setObservations(null)
+                    .setSituation(SituationsIndicator.DEPOIS_JANTAR.getString()).setObservations(null)
                     .setSugarLevel("120").build());
 
             measures.add(measureBuilder.setInsulin("3")
-                    .setSituation(MeasureSituations.ANTES_DORMIR.getString()).setObservations(null)
+                    .setSituation(SituationsIndicator.ANTES_DORMIR.getString()).setObservations(null)
                     .setSugarLevel("100").build());
 
             return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-08").build();
