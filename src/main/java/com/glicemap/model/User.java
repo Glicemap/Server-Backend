@@ -6,22 +6,31 @@ import javax.persistence.*;
 // @Table(name = "user")
 public class User {
     @Id
+    //@Column(name = "first_name", nullable = false, length=35)
     private String documentNumber;
 
+    //@Column(name = "first_name", nullable = false, length=35)
     private String name;
 
+    //@Column(name = "first_name", nullable = false, length=35)
     private String email;
 
+    //@Column(name = "first_name", nullable = false, length=35)
     private String password;
 
+    //@Column(name = "first_name", nullable = false, length=35)
     private String birthdate;
 
+    //@Column(name = "first_name", nullable = false)
     private int height;
 
+    //@Column(name = "first_name", nullable = false)
     private float weight;
 
+    //@Column(name = "first_name", nullable = false)
     private int sugarMin;
 
+    //@Column(name = "first_name", nullable = false)
     private int sugarMax;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
