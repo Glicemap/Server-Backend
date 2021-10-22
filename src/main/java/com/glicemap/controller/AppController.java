@@ -1,11 +1,7 @@
 package com.glicemap.controller;
 
-import com.glicemap.dto.DailyMeasuresDTO;
-import com.glicemap.dto.DatesWithMeasuresDTO;
-import com.glicemap.dto.PostMeasureDTO;
-import com.glicemap.dto.UserMedicInfoDTO;
+import com.glicemap.dto.*;
 import com.glicemap.service.InformationService;
-import com.glicemap.dto.UserDTO;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.service.MeasureService;
 import com.glicemap.service.ReportService;
@@ -18,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +50,67 @@ public class AppController {
         return new ResponseEntity<>(String.format("Olá, %s! Você está no App", name), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    @ApiOperation(value = "Efetua login de usuário")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Retorna se o login foi correto ou não"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ResponseEntity<Boolean> userLogin(@RequestBody LoginDTO loginDTO) {
+        logger.info("AppController - /login called! LoginDTO = [{}]", loginDTO);
+        return new ResponseEntity<>(userService.login(loginDTO), HttpStatus.OK);
+    }
+
+    @Transactional
+    @ApiOperation(value = "Efetua cadastro de usuário")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cadastro efetuado"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> userSignUp(@RequestBody UserDTO userDTO) throws BaseBusinessException {
+        logger.info("AppController - /signUp called! UserDTO = [{}]", userDTO);
+        return new ResponseEntity<>(userService.signUp(userDTO), HttpStatus.OK);
+    }
+
+    @Transactional
+    @ApiOperation(value = "Atualiza o Cadastro")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Atualização efetuada"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> updateInfo(@RequestBody UserDTO userDTO) throws BaseBusinessException {
+        logger.info("AppController - /updateInfo called! UserDTO = [{}]", userDTO);
+        return new ResponseEntity<>(userService.updateInfo(userDTO), HttpStatus.OK);
+    }
+
+    @Transactional
+    @ApiOperation(value = "Desvincula médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Médico desvinculado"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/deleteMedic", method = RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deleteMedic(@RequestHeader String documentNumber) throws BaseBusinessException {
+        logger.info("AppController - /deleteMedic called! documentNumber = [{}]", documentNumber);
+        return new ResponseEntity<>(userService.deleteMedic(documentNumber), HttpStatus.OK);
+    }
+
+    @Transactional
+    @ApiOperation(value = "Vincula médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Médico vinculado"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/addMedic", method = RequestMethod.PUT)
+    public ResponseEntity<Boolean> addMedic(@RequestHeader String documentNumber, @RequestHeader String medicCRM) throws BaseBusinessException {
+        logger.info("AppController - /addMedic called! documentNumber = [{}], medicCRM = [{}]", documentNumber, medicCRM);
+        return new ResponseEntity<>(userService.addMedic(documentNumber, medicCRM), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
     @ApiOperation(value = "Retorna um json com uma lista de datas onde houveram registros glicemicos")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna a lista de datas"),
@@ -66,6 +124,7 @@ public class AppController {
         return new ResponseEntity<>(measureService.getDaysWithMeasure(documentNumber, date), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     @ApiOperation(value = "Retorna um json com uma lista dos registros glicemicos de um certo dia")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna a lista de registros"),
@@ -79,18 +138,21 @@ public class AppController {
         return new ResponseEntity<>(measureService.getDailyMeasures(documentNumber, date), HttpStatus.OK);
     }
 
+    @Transactional
     @ApiOperation(value = "Insere registro glicemico na base de dados")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Inseriu registro na base"),
             @ApiResponse(code = 503, message = "Não foi possivel inserir registro na base"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
+
     @RequestMapping(value = "/postMeasure", method = RequestMethod.POST)
     public ResponseEntity<Boolean> postMeasure(@RequestBody PostMeasureDTO postMeasureDTO) {
         logger.info("AppController - /postMeasure called! PostMeasureDTO = [{}]", postMeasureDTO);
         return new ResponseEntity<>(measureService.postMeasure(postMeasureDTO), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     @ApiOperation(value = "Retorna um json com informações do médico e do usuário")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna json com informações"),
@@ -102,6 +164,7 @@ public class AppController {
         return new ResponseEntity<>(informationService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
     @ApiOperation(value = "Retorna um pdf no padrão das UBS do relatório glicemico no período informado")
 //    @ApiResponses({
 //            @ApiResponse(code = 200, message = "Retorna o relatório em pdf"),

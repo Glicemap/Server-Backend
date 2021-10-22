@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MedicService {
 
-    public Medic getMedicInfo(String CRM) {
+    public Medic getMedic(String CRM) {
         // aqui buscariamos na base pelo CRM
         Medic medic = new Medic();
         medic.setCRM(CRM);
