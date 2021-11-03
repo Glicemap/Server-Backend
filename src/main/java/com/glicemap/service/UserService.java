@@ -1,8 +1,12 @@
 package com.glicemap.service;
 
-import com.glicemap.dto.LoginDTO;
-import com.glicemap.dto.UserDTO;
+import com.glicemap.builder.DailyMeasuresBuilder;
+import com.glicemap.builder.MeasureBuilder;
+import com.glicemap.builder.PatientMeasuresInfoBuilder;
+import com.glicemap.dto.*;
 import com.glicemap.exception.BaseBusinessException;
+import com.glicemap.indicator.FrequencyIndicator;
+import com.glicemap.indicator.SituationsIndicator;
 import com.glicemap.model.User;
 import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
@@ -10,12 +14,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private MedicService medicService;
+
+    @Autowired
+    private PatientMeasuresInfoBuilder patientMeasuresInfoBuilder;
+
+    @Autowired
+    private DailyMeasuresBuilder dailyMeasuresBuilder;
+
+    @Autowired
+    private MeasureBuilder measureBuilder;
 
     //@Autowired
     //private UserRepository userRepository;
@@ -170,5 +186,138 @@ public class UserService {
         user.setSugarMax(420);
         user.setMedic(medicService.getMedic("42"));
         return user;
+    }
+
+    public PatientMeasuresInfoDTO getMeasuresInfo(GetPatientDTO getPatientDTO){
+        List<String> listLow = new ArrayList<>();
+        List<String> listMidLow = new ArrayList<>();
+        List<String> listMidHigh = new ArrayList<>();
+        List<String> listHigh = new ArrayList<>();
+        List<String> listFrequencys = new ArrayList<>();
+        List<DailyMeasuresDTO> dailyMeasures = new ArrayList<>();
+
+        for (int i = 1; i < 5; i++) {
+            dailyMeasures.add(dailyMeasureMocker(i));
+        }
+
+        listLow.add("02-11-2021");
+        listLow.add("07-11-2021");
+        listLow.add("11-11-2021");
+
+        listMidLow.add("04-11-2021");
+        listMidLow.add("14-11-2021");
+        listMidLow.add("20-11-2021");
+
+        listMidHigh.add("07-11-2021");
+        listMidHigh.add("17-11-2021");
+        listMidHigh.add("27-11-2021");
+
+        listHigh.add("10-11-2021");
+        listHigh.add("12-11-2021");
+        listHigh.add("16-11-2021");
+        listHigh.add("25-11-2021");
+
+        listFrequencys.add(FrequencyIndicator.high.getString());
+        listFrequencys.add(FrequencyIndicator.medium.getString());
+        listFrequencys.add(FrequencyIndicator.low.getString());
+        listFrequencys.add(FrequencyIndicator.high.getString());
+        listFrequencys.add(FrequencyIndicator.high.getString());
+        listFrequencys.add(FrequencyIndicator.medium.getString());
+        listFrequencys.add(FrequencyIndicator.low.getString());
+        listFrequencys.add(FrequencyIndicator.high.getString());
+        listFrequencys.add(FrequencyIndicator.high.getString());
+
+        return patientMeasuresInfoBuilder.setName("Marco Aurélio") //
+                .setMeasures(dailyMeasures) //
+                .setLow(listLow) //
+                .setHigh(listHigh) //
+                .setMidhigh(listMidHigh) //
+                .setMidlow(listMidLow) //
+                .setFrequencys(listFrequencys) //
+                .build();
+    }
+
+    private DailyMeasuresDTO dailyMeasureMocker(Integer option) {
+        List<MeasureDTO> measures = new ArrayList<>();
+        if (option == 1) {
+            measures.add(measureBuilder.setInsulin("2").setSugarLevel("110")
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
+                    .setObservations("Medi depois de uma caminhada").build());
+
+            measures.add(measureBuilder.setInsulin("3")
+                    .setSituation(SituationsIndicator.DEPOIS_LANCHE_TARDE.getString())
+                    .setObservations(null).setSugarLevel("200").build());
+
+            measures.add(measureBuilder.setInsulin("1")
+                    .setSituation(SituationsIndicator.DEPOIS_JANTAR.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("140").build());
+
+            return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-05").build();
+        } else if (option == 2) {
+            measures.add(measureBuilder.setInsulin("5")
+                    .setSituation(SituationsIndicator.ANTES_CAFE.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("104").build());
+
+            measures.add(measureBuilder.setInsulin("1").setSugarLevel("70")
+                    .setSituation(SituationsIndicator.DEPOIS_ALMOCO.getString())
+                    .setObservations("Comi bolacha").build());
+
+            measures.add(measureBuilder.setInsulin("3")
+                    .setSituation(SituationsIndicator.ANTES_LANCHE_TARDE.getString())
+                    .setObservations(null).setSugarLevel("116").build());
+
+            measures.add(measureBuilder.setInsulin("1")
+                    .setSituation(SituationsIndicator.ANTES_DORMIR.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("850").build());
+
+            return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-06").build();
+        } else if (option == 3) {
+            measures.add(measureBuilder.setInsulin("5")
+                    .setSituation(SituationsIndicator.DEPOIS_CAFE.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("150").build());
+
+            measures.add(measureBuilder.setInsulin("1").setSugarLevel("182")
+                    .setSituation(SituationsIndicator.ANTES_LANCHE_MANHA.getString())
+                    .setObservations(null).build());
+
+            measures.add(measureBuilder.setInsulin("1").setSugarLevel("115")
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
+                    .setObservations("Comi bolacha").build());
+
+            measures.add(measureBuilder.setInsulin("3")
+                    .setSituation(SituationsIndicator.DEPOIS_ALMOCO.getString()).setObservations(null)
+                    .setSugarLevel("130").build());
+
+            measures.add(measureBuilder.setInsulin("1")
+                    .setSituation(SituationsIndicator.ANTES_JANTAR.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("170").build());
+
+            return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-07").build();
+        } else if (option == 4) {
+            measures.add(measureBuilder.setInsulin("5")
+                    .setSituation(SituationsIndicator.ANTES_CAFE.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("110").build());
+
+            measures.add(measureBuilder.setInsulin("1").setSugarLevel("80")
+                    .setSituation(SituationsIndicator.ANTES_ALMOCO.getString())
+                    .setObservations("Comi bolacha").build());
+
+            measures.add(measureBuilder.setInsulin("1")
+                    .setSituation(SituationsIndicator.ANTES_JANTAR.getString())
+                    .setObservations("Medi logo antes de dormir").setSugarLevel("150").build());
+
+            measures.add(measureBuilder.setInsulin("3")
+                    .setSituation(SituationsIndicator.DEPOIS_JANTAR.getString()).setObservations(null)
+                    .setSugarLevel("120").build());
+
+            measures.add(measureBuilder.setInsulin("3")
+                    .setSituation(SituationsIndicator.ANTES_DORMIR.getString()).setObservations(null)
+                    .setSugarLevel("100").build());
+
+            return dailyMeasuresBuilder.setMeasures(measures).setDate("2020-10-08").build();
+        } else {
+            return null;
+        }
+
     }
 }

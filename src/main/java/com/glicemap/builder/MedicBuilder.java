@@ -12,7 +12,6 @@ public final class MedicBuilder {
     private String password;
     private String birthdate;
 
-
     public MedicBuilder setCRM(String CRM) {
         this.CRM = CRM;
         return this;
