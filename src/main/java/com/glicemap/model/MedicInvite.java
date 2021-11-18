@@ -4,17 +4,16 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "CodigoMedico")
+@Table(name = "codigo_medico")
 public class MedicInvite {
     @Id
     @Column(name = "codigo", nullable = false, length = 6)
     private String code;
-
     @Column(name = "status_codigo", nullable = false)
-    private Boolean status;
+    private int status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "crm_medic")
+    @JoinColumn(name = "crm_medico")
     private Medic medic;
 
     @Column(name = "data_criacao")
@@ -28,11 +27,11 @@ public class MedicInvite {
         this.code = code;
     }
 
-    public Boolean getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

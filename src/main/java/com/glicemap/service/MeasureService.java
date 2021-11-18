@@ -29,13 +29,13 @@ public class MeasureService {
     private MeasureBuilder measureBuilder;
 
     @Autowired
-    private MeasureRepository measureRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
     private SituationService situationService;
+
+    @Autowired
+    private MeasureRepository measureRepository;
 
     public DatesWithMeasuresDTO getDaysWithMeasure(String documentNumber, String date) throws ParseException {
         List<Measure> measures = measureRepository.findByMonth(documentNumber, this.stringToDate(date));

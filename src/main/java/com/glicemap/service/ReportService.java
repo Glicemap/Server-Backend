@@ -21,9 +21,6 @@ public class ReportService {
 
     Logger logger = LoggerFactory.getLogger(ReportService.class);
 
-    public ReportService() {
-    }
-
     private void writeTableHeader(PdfPTable table) {
         PdfPCell cell = new PdfPCell();
         cell.setPadding(10);
