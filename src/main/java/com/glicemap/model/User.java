@@ -1,41 +1,57 @@
 package com.glicemap.model;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
-// @Table(name = "user")
+@Table(name = "Paciente")
 public class User {
     @Id
-    //@Column(name = "first_name", nullable = false, length=35)
+    @Column(name = "cpf", nullable = false, length=11)
     private String documentNumber;
 
-    //@Column(name = "first_name", nullable = false, length=35)
+    @Column(name = "nome", nullable = false, length=20)
     private String name;
 
-    //@Column(name = "first_name", nullable = false, length=35)
+    @Column(name = "email", nullable = false, length=30)
     private String email;
 
-    //@Column(name = "first_name", nullable = false, length=35)
+    @Column(name = "senha", nullable = false, length=30)
     private String password;
 
-    //@Column(name = "first_name", nullable = false, length=35)
-    private String birthdate;
+    @Column(name = "data_nascimento", nullable = false)
+    private Date birthdate;
 
-    //@Column(name = "first_name", nullable = false)
+    @Column(name = "altura")
     private int height;
 
-    //@Column(name = "first_name", nullable = false)
+    @Column(name = "peso")
     private float weight;
 
-    //@Column(name = "first_name", nullable = false)
+    @Column(name = "glicemia_min", nullable = false)
     private int sugarMin;
 
-    //@Column(name = "first_name", nullable = false)
+    @Column(name = "glicemia_max", nullable = false)
     private int sugarMax;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "CRM_Medic", nullable = true)
+    @Column(name = "vinculo_medico")
+    private Date medicJoin;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crm_medic")
     private Medic medic;
+
+    public User(String documentNumber, String name, String email, String password, Date birthdate, int height, float weight, int sugarMin, int sugarMax) {
+        this.documentNumber = documentNumber;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.birthdate = birthdate;
+        this.height = height;
+        this.weight = weight;
+        this.sugarMin = sugarMin;
+        this.sugarMax = sugarMax;
+    }
 
     public String getDocumentNumber() {
         return documentNumber;
@@ -69,11 +85,11 @@ public class User {
         this.password = password;
     }
 
-    public String getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(String birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -115,5 +131,13 @@ public class User {
 
     public void setMedic(Medic medic) {
         this.medic = medic;
+    }
+
+    public Date getMedicJoin() {
+        return medicJoin;
+    }
+
+    public void setMedicJoin(Date medicJoin) {
+        this.medicJoin = medicJoin;
     }
 }
