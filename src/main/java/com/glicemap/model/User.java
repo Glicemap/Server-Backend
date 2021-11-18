@@ -44,9 +44,14 @@ public class User {
     @JoinColumn(name = "crm_medico")
     private Medic medic;
 
-    public User(String documentNumber, String name, String email, String password, Date birthdate, int height, float weight, int sugarMin, int sugarMax) {
+    User(){
+
+    }
+
+    public User(String documentNumber, String name, String lastName, String email, String password, Date birthdate, int height, float weight, int sugarMin, int sugarMax) {
         this.documentNumber = documentNumber;
         this.name = name;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.birthdate = birthdate;
@@ -142,5 +147,13 @@ public class User {
 
     public void setMedicJoin(Date medicJoin) {
         this.medicJoin = medicJoin;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

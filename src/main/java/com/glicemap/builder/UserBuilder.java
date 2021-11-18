@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 public final class UserBuilder {
     private String documentNumber;
     private String name;
+    private String lastName;
     private String email;
     private String password;
     private String birthdate;
@@ -28,6 +29,11 @@ public final class UserBuilder {
 
     public UserBuilder setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public UserBuilder setLastName(String lastName) {
+        this.lastName = lastName;
         return this;
     }
 
@@ -90,6 +96,7 @@ public final class UserBuilder {
         UserDTO userDTO = new UserDTO();
         userDTO.setDocumentNumber(user.getDocumentNumber());
         userDTO.setName(user.getName());
+        userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setBirthdate(user.getBirthdate().toString());

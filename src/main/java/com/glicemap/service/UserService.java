@@ -99,6 +99,7 @@ public class UserService {
 
         User newUser = new User(userDTO.getDocumentNumber(),
                 userDTO.getName(),
+                userDTO.getLastName(),
                 userDTO.getEmail(),
                 userDTO.getPassword(),
                 this.stringToDate(userDTO.getBirthdate()),
@@ -192,7 +193,7 @@ public class UserService {
     }
 
     private Date stringToDate(String dateString) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date dateUtil = sdf.parse(dateString);
         return new Date(dateUtil.getTime());
     }
