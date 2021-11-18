@@ -84,7 +84,7 @@ public class ReportService {
         for (DailyMeasuresDTO dailyMeasures : measures) {
             cell.setColspan(1);
             String[] dateSplited = dailyMeasures.getDate().split("-");
-            cell.setPhrase(new Phrase(String.format("%s/%s/%s", dateSplited[2], dateSplited[1], dateSplited[0]), font));
+            cell.setPhrase(new Phrase(String.format("%s/%s/%s", dateSplited[0], dateSplited[1], dateSplited[2]), font));
             table.addCell(cell);
 
             for (SituationsIndicator situation : SituationsIndicator.values()) {

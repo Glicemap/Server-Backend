@@ -47,7 +47,11 @@ public class UserService {
 
     public UserMedicInfoDTO getUserMedicInfo(String documentNumber) {
         User user = this.getUser(documentNumber);
-        return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
+        if (user.getMedic() != null){
+            return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
+        } else {
+            return userMedicInfoBuilder.setMedic(null).setUser(userBuilder.buildModel(user)).build();
+        }
     }
 
     public Boolean login(LoginDTO loginDTO) {
@@ -78,7 +82,7 @@ public class UserService {
 
     public Boolean signUp(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
-                (userDTO.getBirthdate() == null) || //
+                (this.isNullOrEmpty(userDTO.getBirthdate())) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
                 (this.isNullOrEmpty(userDTO.getName())) || //
                 (this.isNullOrEmpty(userDTO.getPassword())) || //
@@ -157,7 +161,7 @@ public class UserService {
 
     public Boolean updateInfo(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
-                (userDTO.getBirthdate() != null) || //
+                (this.isNullOrEmpty(userDTO.getBirthdate())) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
                 (this.isNullOrEmpty(userDTO.getName())) || //
                 (this.isNullOrEmpty(userDTO.getPassword())) || //
@@ -169,13 +173,13 @@ public class UserService {
             throw new BaseBusinessException("UPDATE_INFO_ERROR_0001");
         }
 
-        User usuario = userRepository.findByDocumentNumber(userDTO.getDocumentNumber());
-
-        if (usuario == null) {
+        User user = userRepository.findByDocumentNumber(userDTO.getDocumentNumber());
+        logger.info("UserService - update user - User found: [{}]", user);
+        if (user == null) {
             logger.error("UserService - Update Info Error - User not found - Document Number [{}]", userDTO.getDocumentNumber());
             throw new BaseBusinessException("UPDATE_INFO_ERROR_0002");
         } else {
-            this.updateUser(usuario, userDTO);
+            this.updateUser(user, userDTO);
             return Boolean.TRUE;
         }
     }
@@ -188,7 +192,7 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setBirthdate(this.stringToDate(userDTO.getBirthdate()));
         user.setHeight(userDTO.getHeight());
-
+        logger.info("UserService - update user - User updated: [{}]", user);
         userRepository.save(user);
     }
 

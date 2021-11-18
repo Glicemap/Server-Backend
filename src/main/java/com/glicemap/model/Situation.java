@@ -12,8 +12,8 @@ public class Situation {
     @Column(name = "codigo", nullable = false)
     private int code;
 
-    @Column(name = "ocasiao", nullable = false, length = 20)
-    private SituationsIndicator situation;
+    @Column(name = "ocasiao", nullable = false, length = 40)
+    private String situation;
 
     public int getCode() {
         return code;
@@ -23,11 +23,11 @@ public class Situation {
         this.code = code;
     }
 
-    public SituationsIndicator getSituation() {
+    public String getSituation() {
         return situation;
     }
 
-    public void setSituation(SituationsIndicator situation) {
+    public void setSituation(String situation) {
         this.situation = situation;
     }
 }

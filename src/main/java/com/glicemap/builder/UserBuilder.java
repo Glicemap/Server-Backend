@@ -104,7 +104,11 @@ public final class UserBuilder {
         userDTO.setWeight(user.getWeight());
         userDTO.setSugarMin(user.getSugarMin());
         userDTO.setSugarMax(user.getSugarMax());
-        userDTO.setCrmMedic(user.getMedic().getCRM());
+        if (user.getMedic() != null){
+            userDTO.setCrmMedic(user.getMedic().getCRM());
+        } else {
+            userDTO.setCrmMedic(null);
+        }
         return userDTO;
     }
 }
