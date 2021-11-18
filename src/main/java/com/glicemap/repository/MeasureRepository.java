@@ -10,7 +10,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Repository
-public interface MeasureRepository extends JpaRepository<Measure, Long>{
+public interface MeasureRepository extends JpaRepository<Measure, Long> {
 
     @Query("SELECT m FROM Measure m WHERE m.user = :documentNumber AND MONTH(m.createdDate) = MONTH(:date)")
     List<Measure> findByMonth(@Param("documentNumber") String documentNumber, @Param("date") Date date);

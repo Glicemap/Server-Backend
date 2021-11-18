@@ -1,7 +1,6 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.DailyMeasuresDTO;
-import com.glicemap.dto.NotificationDTO;
 import com.glicemap.dto.PatientMeasuresInfoDTO;
 import org.springframework.stereotype.Component;
 

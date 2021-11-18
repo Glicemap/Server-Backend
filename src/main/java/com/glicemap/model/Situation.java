@@ -2,7 +2,10 @@ package com.glicemap.model;
 
 import com.glicemap.indicator.SituationsIndicator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "Ocasiao")

@@ -9,16 +9,16 @@ import javax.persistence.Table;
 @Table(name = "Medico")
 public class Medic {
     @Id
-    @Column(name = "crm", nullable = false, length=20)
+    @Column(name = "crm", nullable = false, length = 20)
     private String CRM;
 
-    @Column(name = "nome", nullable = false, length=60)
+    @Column(name = "nome", nullable = false, length = 60)
     private String name;
 
-    @Column(name = "email", nullable = false, length=30)
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
-    @Column(name = "senha", nullable = false, length=30)
+    @Column(name = "senha", nullable = false, length = 30)
     private String password;
 
     public String getCRM() {
