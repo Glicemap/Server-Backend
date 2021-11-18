@@ -1,10 +1,9 @@
 package com.glicemap.service;
 
-import com.glicemap.builder.DailyMeasuresBuilder;
-import com.glicemap.builder.MeasureBuilder;
-import com.glicemap.builder.PatientMeasuresInfoBuilder;
+import com.glicemap.builder.*;
 import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
+import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.model.Medic;
 import com.glicemap.model.User;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Service
 public class UserService {
@@ -24,16 +25,16 @@ public class UserService {
     private MedicService medicService;
 
     @Autowired
-    private PatientMeasuresInfoBuilder patientMeasuresInfoBuilder;
-
-    @Autowired
-    private DailyMeasuresBuilder dailyMeasuresBuilder;
-
-    @Autowired
-    private MeasureBuilder measureBuilder;
-
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMedicInfoBuilder userMedicInfoBuilder;
+
+    @Autowired
+    private MedicBuilder medicBuilder;
+
+    @Autowired
+    private UserBuilder userBuilder;
 
     public User getUser(String documentNumber) {
         User user = userRepository.findByDocumentNumber(documentNumber);
@@ -42,6 +43,11 @@ public class UserService {
             throw new BaseBusinessException("GET_USER_INFO_0001");
         }
         return user;
+    }
+
+    public UserMedicInfoDTO getUserMedicInfo(String documentNumber) {
+        User user = this.getUser(documentNumber);
+        return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
     }
 
     public Boolean login(LoginDTO loginDTO) {
@@ -70,9 +76,9 @@ public class UserService {
         return txt == null || txt.isEmpty() || txt.trim().isEmpty();
     }
 
-    public Boolean signUp(UserDTO userDTO) throws BaseBusinessException {
+    public Boolean signUp(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
-                (userDTO.getBirthdate() != null) || //
+                (userDTO.getBirthdate() == null) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
                 (this.isNullOrEmpty(userDTO.getName())) || //
                 (this.isNullOrEmpty(userDTO.getPassword())) || //
@@ -84,8 +90,9 @@ public class UserService {
             throw new BaseBusinessException("SIGNUP_ERROR_0001");
         }
 
-        boolean userAlreadyExists = (userRepository.findByDocumentNumber(userDTO.getDocumentNumber()) == null);
-        if (userAlreadyExists) {
+        User user = userRepository.findByDocumentNumber(userDTO.getDocumentNumber());
+        logger.info("UserService - signUp - User found: [{}]", user);
+        if (user != null) {
             logger.error("UserService - SignUp Error - Account already exists - DocumentNumber [{}]", userDTO.getDocumentNumber());
             throw new BaseBusinessException("SIGNUP_ERROR_0002");
         }
@@ -94,7 +101,7 @@ public class UserService {
                 userDTO.getName(),
                 userDTO.getEmail(),
                 userDTO.getPassword(),
-                userDTO.getBirthdate(),
+                this.stringToDate(userDTO.getBirthdate()),
                 userDTO.getHeight(),
                 userDTO.getWeight(),
                 userDTO.getSugarMin(),
@@ -147,7 +154,7 @@ public class UserService {
         return Boolean.TRUE;
     }
 
-    public Boolean updateInfo(UserDTO userDTO) throws BaseBusinessException {
+    public Boolean updateInfo(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
                 (userDTO.getBirthdate() != null) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
@@ -172,15 +179,21 @@ public class UserService {
         }
     }
 
-    private void updateUser(User user, UserDTO userDTO) {
+    private void updateUser(User user, UserDTO userDTO) throws ParseException {
         user.setSugarMin(userDTO.getSugarMin());
         user.setSugarMax(userDTO.getSugarMax());
         user.setWeight(userDTO.getWeight());
         user.setPassword(userDTO.getPassword());
         user.setEmail(userDTO.getEmail());
-        user.setBirthdate(userDTO.getBirthdate());
+        user.setBirthdate(this.stringToDate(userDTO.getBirthdate()));
         user.setHeight(userDTO.getHeight());
 
         userRepository.save(user);
+    }
+
+    private Date stringToDate(String dateString) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        java.util.Date dateUtil = sdf.parse(dateString);
+        return new Date(dateUtil.getTime());
     }
 }

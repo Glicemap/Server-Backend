@@ -19,7 +19,7 @@ public class UserDTO implements Serializable {
     @JsonProperty("password")
     private String password;
     @JsonProperty("birthdate")
-    private Date birthdate;
+    private String birthdate;
     @JsonProperty("height")
     private int height;
     @JsonProperty("weight")

@@ -5,6 +5,8 @@ import com.glicemap.model.User;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Component
 public final class UserBuilder {
@@ -12,7 +14,7 @@ public final class UserBuilder {
     private String name;
     private String email;
     private String password;
-    private Date birthdate;
+    private String birthdate;
     private int height;
     private float weight;
     private int sugarMin;
@@ -39,7 +41,7 @@ public final class UserBuilder {
         return this;
     }
 
-    public UserBuilder setBirthdate(Date birthdate) {
+    public UserBuilder setBirthdate(String birthdate) {
         this.birthdate = birthdate;
         return this;
     }
@@ -90,7 +92,7 @@ public final class UserBuilder {
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
-        userDTO.setBirthdate(user.getBirthdate());
+        userDTO.setBirthdate(user.getBirthdate().toString());
         userDTO.setHeight(user.getHeight());
         userDTO.setWeight(user.getWeight());
         userDTO.setSugarMin(user.getSugarMin());

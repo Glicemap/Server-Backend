@@ -2,7 +2,6 @@ package com.glicemap.controller;
 
 import com.glicemap.dto.*;
 import com.glicemap.exception.BaseBusinessException;
-import com.glicemap.service.InformationService;
 import com.glicemap.service.MeasureService;
 import com.glicemap.service.ReportService;
 import com.glicemap.service.UserService;
@@ -38,9 +37,6 @@ public class AppController {
     @Autowired
     private ReportService reportService;
 
-    @Autowired
-    private InformationService informationService;
-
     @ApiOperation(value = "Retorna um texto para teste da controller")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna texto de comprimento")
@@ -70,7 +66,7 @@ public class AppController {
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> userSignUp(@RequestBody UserDTO userDTO) throws BaseBusinessException {
+    public ResponseEntity<Boolean> userSignUp(@RequestBody UserDTO userDTO) throws BaseBusinessException, ParseException {
         logger.info("AppController - /signUp called! UserDTO = [{}]", userDTO);
         return new ResponseEntity<>(userService.signUp(userDTO), HttpStatus.OK);
     }
@@ -82,7 +78,7 @@ public class AppController {
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
     @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> updateInfo(@RequestBody UserDTO userDTO) throws BaseBusinessException {
+    public ResponseEntity<Boolean> updateInfo(@RequestBody UserDTO userDTO) throws BaseBusinessException, ParseException {
         logger.info("AppController - /updateInfo called! UserDTO = [{}]", userDTO);
         return new ResponseEntity<>(userService.updateInfo(userDTO), HttpStatus.OK);
     }
@@ -161,7 +157,7 @@ public class AppController {
     @RequestMapping(value = "/getInfo", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<UserMedicInfoDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
         logger.info("AppController - /getInfo/user called! documentNumber = [{}]", documentNumber);
-        return new ResponseEntity<>(informationService.getUserMedicInfo(documentNumber), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)

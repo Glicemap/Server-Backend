@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "RegistroGlicemico")
+@Table(name = "registro_glicemico")
 public class Measure {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +15,7 @@ public class Measure {
     @JoinColumn(name = "cpf_paciente")
     private User user;
 
-    @Column(name = "data_registro")
+    @Column(name = "data_registro", nullable = false)
     private Date createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

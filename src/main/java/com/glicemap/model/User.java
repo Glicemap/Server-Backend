@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "Paciente")
+@Table(name = "paciente")
 public class User {
     @Id
     @Column(name = "cpf", nullable = false, length = 11)
@@ -12,6 +12,9 @@ public class User {
 
     @Column(name = "nome", nullable = false, length = 20)
     private String name;
+
+    @Column(name = "sobrenome", nullable = false, length = 50)
+    private String lastName;
 
     @Column(name = "email", nullable = false, length = 30)
     private String email;
@@ -38,7 +41,7 @@ public class User {
     private Date medicJoin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "crm_medic")
+    @JoinColumn(name = "crm_medico")
     private Medic medic;
 
     public User(String documentNumber, String name, String email, String password, Date birthdate, int height, float weight, int sugarMin, int sugarMax) {

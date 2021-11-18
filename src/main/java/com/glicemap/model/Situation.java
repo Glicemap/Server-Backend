@@ -2,15 +2,13 @@ package com.glicemap.model;
 
 import com.glicemap.indicator.SituationsIndicator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "Ocasiao")
+@Table(name = "ocasiao")
 public class Situation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private int code;
 

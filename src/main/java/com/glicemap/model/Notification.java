@@ -3,17 +3,17 @@ package com.glicemap.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Notificacao")
+@Table(name = "notificacao")
 public class Notification {
     @Id
     @Column(name = "codigo", nullable = false)
     private int code;
 
     @Column(name = "status_notificacao", nullable = false)
-    private Boolean status;
+    private int status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "crm_medic")
+    @JoinColumn(name = "crm_medico")
     private Medic medic;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -28,11 +28,11 @@ public class Notification {
         this.code = code;
     }
 
-    public Boolean getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

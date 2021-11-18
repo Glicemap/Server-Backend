@@ -3,7 +3,6 @@ package com.glicemap.service;
 import com.glicemap.builder.MedicBuilder;
 import com.glicemap.builder.PatientPreviewBuilder;
 import com.glicemap.builder.PatientsListBuilder;
-import com.glicemap.controller.WebController;
 import com.glicemap.dto.GetPatientsDTO;
 import com.glicemap.dto.MedicDTO;
 import com.glicemap.dto.PatientPreviewDTO;
@@ -23,7 +22,7 @@ import java.util.Random;
 @Service
 public class MedicService {
 
-    Logger logger = LoggerFactory.getLogger(WebController.class);
+    Logger logger = LoggerFactory.getLogger(MedicService.class);
 
     @Autowired
     private PatientPreviewBuilder patientPreviewBuilder;
