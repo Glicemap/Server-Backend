@@ -7,16 +7,16 @@ import java.sql.Date;
 @Table(name = "Paciente")
 public class User {
     @Id
-    @Column(name = "cpf", nullable = false, length=11)
+    @Column(name = "cpf", nullable = false, length = 11)
     private String documentNumber;
 
-    @Column(name = "nome", nullable = false, length=20)
+    @Column(name = "nome", nullable = false, length = 20)
     private String name;
 
-    @Column(name = "email", nullable = false, length=30)
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
-    @Column(name = "senha", nullable = false, length=30)
+    @Column(name = "senha", nullable = false, length = 30)
     private String password;
 
     @Column(name = "data_nascimento", nullable = false)

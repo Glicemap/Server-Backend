@@ -4,7 +4,6 @@ import com.glicemap.builder.MedicBuilder;
 import com.glicemap.builder.UserBuilder;
 import com.glicemap.builder.UserMedicInfoBuilder;
 import com.glicemap.dto.UserMedicInfoDTO;
-import com.glicemap.model.Medic;
 import com.glicemap.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

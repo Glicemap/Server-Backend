@@ -1,7 +1,6 @@
 package com.glicemap.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glicemap.indicator.FrequencyIndicator;
 import lombok.Data;
 
 import java.io.Serializable;

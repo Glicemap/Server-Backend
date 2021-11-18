@@ -41,7 +41,7 @@ public class MeasureService {
         List<Measure> measures = measureRepository.findByMonth(documentNumber, this.stringToDate(date));
         List<String> listDates = new ArrayList<>();
 
-        for(Measure measure : measures){
+        for (Measure measure : measures) {
             listDates.add(measure.getCreatedDate().toString());
         }
 
@@ -53,12 +53,12 @@ public class MeasureService {
 
         List<MeasureDTO> measuresDTOS = new ArrayList<>();
 
-        for (Measure measure : measures){
+        for (Measure measure : measures) {
             MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
-                                                  .setObservations(measure.getObservations())
-                                                  .setSituation(measure.getSituation().getSituation().getString())
-                                                  .setSugarLevel(Integer.toString(measure.getSugarLevel()))
-                                                  .build();
+                    .setObservations(measure.getObservations())
+                    .setSituation(measure.getSituation().getSituation().getString())
+                    .setSugarLevel(Integer.toString(measure.getSugarLevel()))
+                    .build();
             measuresDTOS.add(measureDTO);
         }
 
@@ -96,7 +96,7 @@ public class MeasureService {
             startDate = c.getTime();
         }
 
-        for (java.util.Date date : dates){
+        for (java.util.Date date : dates) {
             DailyMeasuresDTO dailyMeasures = new DailyMeasuresDTO();
             dailyMeasures.setDate(date.toString());
 
@@ -104,7 +104,7 @@ public class MeasureService {
 
             List<MeasureDTO> measuresDTO = new ArrayList<>();
 
-            for (Measure measure : measures){
+            for (Measure measure : measures) {
                 MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
                         .setObservations(measure.getObservations())
                         .setSituation(measure.getSituation().getSituation().getString())
@@ -126,7 +126,7 @@ public class MeasureService {
         return new Date(dateUtil.getTime());
     }
 
-    public PatientMeasuresInfoDTO getMeasuresInfo(GetPatientDTO getPatientDTO){
+    public PatientMeasuresInfoDTO getMeasuresInfo(GetPatientDTO getPatientDTO) {
         return new PatientMeasuresInfoDTO();
     }
 

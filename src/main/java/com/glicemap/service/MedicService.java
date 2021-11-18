@@ -4,7 +4,10 @@ import com.glicemap.builder.MedicBuilder;
 import com.glicemap.builder.PatientPreviewBuilder;
 import com.glicemap.builder.PatientsListBuilder;
 import com.glicemap.controller.WebController;
-import com.glicemap.dto.*;
+import com.glicemap.dto.GetPatientsDTO;
+import com.glicemap.dto.MedicDTO;
+import com.glicemap.dto.PatientPreviewDTO;
+import com.glicemap.dto.PatientsListDTO;
 import com.glicemap.indicator.FrequencyIndicator;
 import com.glicemap.model.Medic;
 import com.glicemap.repository.MedicRepository;
@@ -40,7 +43,7 @@ public class MedicService {
         return medic;
     }
 
-    public MedicDTO getMedicDTO(String CRM){
+    public MedicDTO getMedicDTO(String CRM) {
         return medicBuilder.buildModel(this.getMedic(CRM));
     }
 
@@ -56,7 +59,7 @@ public class MedicService {
         final char[] charsArray = chars.toCharArray();
         char[] charsCode = new char[6];
         Random random = new Random();
-        for (int i = 0; i < charsCode.length; ++i){
+        for (int i = 0; i < charsCode.length; ++i) {
             charsCode[i] = charsArray[random.nextInt(charsArray.length)];
         }
         String code = String.valueOf(charsCode);
@@ -65,7 +68,7 @@ public class MedicService {
         return code;
     }
 
-    public PatientsListDTO getPatients(GetPatientsDTO getPatientsDTO){
+    public PatientsListDTO getPatients(GetPatientsDTO getPatientsDTO) {
         List<PatientPreviewDTO> patients = new ArrayList<>();
 
         patients.add(patientPreviewBuilder.setName("Marco Aurélio") //
