@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 @Data
 public class UserDTO implements Serializable {
@@ -18,7 +19,7 @@ public class UserDTO implements Serializable {
     @JsonProperty("password")
     private String password;
     @JsonProperty("birthdate")
-    private String birthdate;
+    private Date birthdate;
     @JsonProperty("height")
     private int height;
     @JsonProperty("weight")

@@ -7,6 +7,7 @@ import com.glicemap.controller.WebController;
 import com.glicemap.dto.*;
 import com.glicemap.indicator.FrequencyIndicator;
 import com.glicemap.model.Medic;
+import com.glicemap.repository.MedicRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,12 @@ public class MedicService {
     @Autowired
     private MedicBuilder medicBuilder;
 
+    @Autowired
+    private MedicRepository medicRepository;
+
     public Medic getMedic(String CRM) {
         logger.info("MedicService - getMedic - Getting info from CRM [{}]", CRM);
-        // aqui buscariamos na base pelo CRM
-        Medic medic = new Medic();
-        medic.setCRM(CRM);
-        medic.setBirthdate("2000-04-30");
-        medic.setName("Dorival Caymmi");
-        medic.setEmail("dorival@gmail.com");
-        medic.setPassword("saudadesdabahia");
+        Medic medic = medicRepository.findByDocumentNumber(CRM);
         return medic;
     }
 

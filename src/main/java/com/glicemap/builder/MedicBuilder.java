@@ -10,7 +10,6 @@ public final class MedicBuilder {
     private String name;
     private String email;
     private String password;
-    private String birthdate;
 
     public MedicBuilder setCRM(String CRM) {
         this.CRM = CRM;
@@ -32,24 +31,17 @@ public final class MedicBuilder {
         return this;
     }
 
-    public MedicBuilder setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
-        return this;
-    }
-
     public MedicDTO build() {
         MedicDTO medicDTO = new MedicDTO();
         medicDTO.setCRM(CRM);
         medicDTO.setName(name);
         medicDTO.setEmail(email);
         medicDTO.setPassword(password);
-        medicDTO.setBirthdate(birthdate);
         return medicDTO;
     }
 
     public MedicDTO buildModel(Medic medic) {
         MedicDTO medicDTO = new MedicDTO();
-        medicDTO.setBirthdate(medic.getBirthdate());
         medicDTO.setCRM(medic.getCRM());
         medicDTO.setEmail(medic.getEmail());
         medicDTO.setPassword(medic.getPassword());

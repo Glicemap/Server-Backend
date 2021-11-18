@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -118,7 +119,7 @@ public class AppController {
     })
     @RequestMapping(value = "/searchMeasures/month", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<DatesWithMeasuresDTO> searchMeasuresMonth(@RequestHeader("documentNumber") String documentNumber,
-                                                                    @RequestHeader("date") String date) {
+                                                                    @RequestHeader("date") String date) throws ParseException {
 
         logger.info("AppController - /searchMeasures/month called! documentNumber = [{}], date = [{}]", documentNumber, date);
         return new ResponseEntity<>(measureService.getDaysWithMeasure(documentNumber, date), HttpStatus.OK);
@@ -132,7 +133,7 @@ public class AppController {
     })
     @RequestMapping(value = "/searchMeasures/day", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<DailyMeasuresDTO> searchMeasuresDay(@RequestHeader("documentNumber") String documentNumber,
-                                                              @RequestHeader("date") String date) {
+                                                              @RequestHeader("date") String date) throws ParseException {
 
         logger.info("AppController - /searchMeasures/day called! documentNumber = [{}], date = [{}]", documentNumber, date);
         return new ResponseEntity<>(measureService.getDailyMeasures(documentNumber, date), HttpStatus.OK);
@@ -145,9 +146,8 @@ public class AppController {
             @ApiResponse(code = 503, message = "Não foi possivel inserir registro na base"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-
     @RequestMapping(value = "/postMeasure", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> postMeasure(@RequestBody PostMeasureDTO postMeasureDTO) {
+    public ResponseEntity<Boolean> postMeasure(@RequestBody PostMeasureDTO postMeasureDTO) throws ParseException {
         logger.info("AppController - /postMeasure called! PostMeasureDTO = [{}]", postMeasureDTO);
         return new ResponseEntity<>(measureService.postMeasure(postMeasureDTO), HttpStatus.OK);
     }
@@ -174,7 +174,7 @@ public class AppController {
     public void exportReport(HttpServletResponse response,
                              @RequestHeader("documentNumber") String documentNumber,
                              @RequestHeader("dateBegin") String dateBegin,
-                             @RequestHeader("dateEnd") String dateEnd) throws BaseBusinessException {
+                             @RequestHeader("dateEnd") String dateEnd) throws BaseBusinessException, ParseException {
 
         logger.info("AppController - /exportReport called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
 

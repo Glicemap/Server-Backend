@@ -4,13 +4,15 @@ import com.glicemap.dto.UserDTO;
 import com.glicemap.model.User;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
+
 @Component
 public final class UserBuilder {
     private String documentNumber;
     private String name;
     private String email;
     private String password;
-    private String birthdate;
+    private Date birthdate;
     private int height;
     private float weight;
     private int sugarMin;
@@ -37,7 +39,7 @@ public final class UserBuilder {
         return this;
     }
 
-    public UserBuilder setBirthdate(String birthdate) {
+    public UserBuilder setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
         return this;
     }
