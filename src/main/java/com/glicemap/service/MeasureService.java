@@ -83,11 +83,11 @@ public class MeasureService {
         MeasureDTO measureDTO = postMeasureDTO.getMeasure();
 
         Measure measure = new Measure(user, //
-                                      this.stringToDate(postMeasureDTO.getDate()), //
-                                      situationService.getSituationBySituation(measureDTO.getSituation()), //
-                                      Integer.parseInt(measureDTO.getSugarLevel()), //
-                                      Integer.parseInt(measureDTO.getInsulin()), //
-                                      measureDTO.getObservations()); //
+                this.stringToDate(postMeasureDTO.getDate()), //
+                situationService.getSituationBySituation(measureDTO.getSituation()), //
+                Integer.parseInt(measureDTO.getSugarLevel()), //
+                Integer.parseInt(measureDTO.getInsulin()), //
+                measureDTO.getObservations()); //
 
         measureRepository.save(measure);
 

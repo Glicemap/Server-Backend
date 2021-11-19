@@ -1,10 +1,5 @@
 package com.glicemap.service;
 
-import com.glicemap.builder.NotificationBuilder;
-import com.glicemap.builder.NotificationsBuilder;
-import com.glicemap.dto.NotificationDTO;
-import com.glicemap.dto.NotificationsDTO;
-import com.glicemap.dto.NotificationsIdsDTO;
 import com.glicemap.model.Medic;
 import com.glicemap.model.MedicInvite;
 import com.glicemap.repository.MedicInviteRepository;
@@ -14,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 @Service
@@ -29,11 +22,11 @@ public class MedicInviteService {
     @Autowired
     private MedicService medicService;
 
-    public MedicInvite findActiveByMedic(String crm){
+    public MedicInvite findActiveByMedic(String crm) {
         return medicInviteRepository.findActiveByMedic(crm);
     }
 
-    public void save(MedicInvite medicInvite){
+    public void save(MedicInvite medicInvite) {
         medicInviteRepository.save(medicInvite);
     }
 
@@ -41,7 +34,7 @@ public class MedicInviteService {
         return medicInviteRepository.findByCode(code);
     }
 
-    private String codeGenerator(){
+    private String codeGenerator() {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         final char[] charsArray = chars.toCharArray();
         char[] charsCode = new char[6];
@@ -60,7 +53,7 @@ public class MedicInviteService {
         // Invalida codigo atual se existir
         MedicInvite currentInvite = this.findActiveByMedic(CRM);
         logger.info("MedicService - generateCode - Current Invite [{}]", currentInvite);
-        if (currentInvite != null){
+        if (currentInvite != null) {
             currentInvite.setStatus(0);
             this.save(currentInvite);
         }
@@ -68,12 +61,12 @@ public class MedicInviteService {
         // gera código até que seja válido
         MedicInvite invite;
         String code;
-        do{
+        do {
             code = codeGenerator();
             logger.info("MedicService - generateCode - Code generated [{}]", code);
             invite = this.findByCode(code);
             logger.info("MedicService - generateCode - Invite [{}]", invite);
-        }while(invite != null);
+        } while (invite != null);
 
         // salva código
         Medic medic = medicService.getMedic(CRM);

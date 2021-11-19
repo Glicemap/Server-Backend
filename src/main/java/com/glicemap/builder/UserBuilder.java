@@ -4,10 +4,6 @@ import com.glicemap.dto.UserDTO;
 import com.glicemap.model.User;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 @Component
 public final class UserBuilder {
     private String documentNumber;
@@ -104,7 +100,7 @@ public final class UserBuilder {
         userDTO.setWeight(user.getWeight());
         userDTO.setSugarMin(user.getSugarMin());
         userDTO.setSugarMax(user.getSugarMax());
-        if (user.getMedic() != null){
+        if (user.getMedic() != null) {
             userDTO.setCrmMedic(user.getMedic().getCRM());
         } else {
             userDTO.setCrmMedic(null);

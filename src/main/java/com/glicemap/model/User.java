@@ -44,7 +44,7 @@ public class User {
     @JoinColumn(name = "crm_medico")
     private Medic medic;
 
-    User(){
+    User() {
 
     }
 

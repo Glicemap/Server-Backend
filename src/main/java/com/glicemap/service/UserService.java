@@ -1,6 +1,8 @@
 package com.glicemap.service;
 
-import com.glicemap.builder.*;
+import com.glicemap.builder.MedicBuilder;
+import com.glicemap.builder.UserBuilder;
+import com.glicemap.builder.UserMedicInfoBuilder;
 import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -49,7 +50,7 @@ public class UserService {
 
     public UserMedicInfoDTO getUserMedicInfo(String documentNumber) {
         User user = this.getUser(documentNumber);
-        if (user.getMedic() != null){
+        if (user.getMedic() != null) {
             return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
         } else {
             return userMedicInfoBuilder.setMedic(null).setUser(userBuilder.buildModel(user)).build();

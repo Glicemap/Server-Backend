@@ -1,6 +1,5 @@
 package com.glicemap.repository;
 
-import com.glicemap.indicator.SituationsIndicator;
 import com.glicemap.model.Situation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

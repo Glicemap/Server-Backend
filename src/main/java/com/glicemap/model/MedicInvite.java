@@ -19,7 +19,8 @@ public class MedicInvite {
     @Column(name = "data_criacao")
     private Date createdDate;
 
-    MedicInvite(){}
+    MedicInvite() {
+    }
 
     public MedicInvite(String code, int status, Medic medic, Date createdDate) {
         this.code = code;

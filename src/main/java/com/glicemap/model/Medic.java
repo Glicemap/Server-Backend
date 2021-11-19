@@ -21,7 +21,8 @@ public class Medic {
     @Column(name = "senha", nullable = false, length = 30)
     private String password;
 
-    Medic(){}
+    Medic() {
+    }
 
     public Medic(String CRM, String name, String email, String password) {
         this.CRM = CRM;

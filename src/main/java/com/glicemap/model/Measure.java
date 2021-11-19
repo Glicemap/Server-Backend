@@ -31,7 +31,7 @@ public class Measure {
     @Column(name = "observacoes", length = 200)
     private String observations;
 
-    Measure(){
+    Measure() {
 
     }
 

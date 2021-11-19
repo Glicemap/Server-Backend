@@ -26,7 +26,7 @@ public class SituationService {
     public Situation getSituationBySituation(String situation) {
         logger.info("Situation Service - getSituationBySituation - Getting situation from Situation [{}]", situation);
         Situation situationObject = situationRepository.findBySituation(situation);
-        if (situationObject != null){
+        if (situationObject != null) {
             logger.info("Situation Service - getSituationBySituation - Situation found [{}]", situationObject.getSituation());
         }
         return situationObject;

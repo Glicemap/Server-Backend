@@ -1,7 +1,5 @@
 package com.glicemap.model;
 
-import com.glicemap.indicator.SituationsIndicator;
-
 import javax.persistence.*;
 
 @Entity
