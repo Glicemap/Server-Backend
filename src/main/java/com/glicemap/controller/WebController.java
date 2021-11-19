@@ -1,9 +1,8 @@
 package com.glicemap.controller;
 
 import com.glicemap.dto.*;
-import com.glicemap.service.MedicService;
-import com.glicemap.service.NotificationService;
-import com.glicemap.service.UserService;
+import com.glicemap.exception.BaseBusinessException;
+import com.glicemap.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -12,7 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/web")
@@ -24,10 +30,16 @@ public class WebController {
     private MedicService medicService;
 
     @Autowired
-    private UserService userService;
+    private MedicInviteService medicInviteService;
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private MeasureService measureService;
+
+    @Autowired
+    private ReportService reportService;
 
     @ApiOperation(value = "Retorna um texto para teste da controller")
     @ApiResponses({
@@ -38,14 +50,35 @@ public class WebController {
         return new ResponseEntity<>(String.format("Olá, %s! Você está no Web", name), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Efetua login de médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "REsultado do login")
+    })
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> login(@RequestBody LoginDTO loginDTO) {
+        logger.info("WebController - /login called! - Login [{}]", loginDTO);
+        return new ResponseEntity<>(medicService.login(loginDTO), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Cadastra novo médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cadastrou novo médico"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> signup(@RequestBody MedicDTO medicDTO) {
+        logger.info("WebController - /sign-up called! - MedicDTO [{}]", medicDTO);
+        return new ResponseEntity<>(medicService.signUp(medicDTO), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Gera código convite do médico")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna código de convite")
     })
     @RequestMapping(value = "/get-new-code", method = RequestMethod.GET)
-    public ResponseEntity<String> getNewCode() {
-        logger.info("WebController - /get-new-code called!");
-        return new ResponseEntity<>(medicService.generateCode(), HttpStatus.OK);
+    public ResponseEntity<String> getNewCode(@RequestHeader String CRM) {
+        logger.info("WebController - /get-new-code called! CRM [{}]", CRM);
+        return new ResponseEntity<>(medicInviteService.generateCode(CRM), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Lista pacientes")
@@ -65,7 +98,7 @@ public class WebController {
     @RequestMapping(value = "/get-patient", method = RequestMethod.GET)
     public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@RequestBody GetPatientDTO getPatientDTO) {
         logger.info("WebController - /get-patient called GetPatientDTO [{}]", getPatientDTO);
-        return new ResponseEntity<>(userService.getMeasuresInfo(getPatientDTO), HttpStatus.OK);
+        return new ResponseEntity<>(measureService.getMeasuresInfo(getPatientDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca notificações")
@@ -112,9 +145,35 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Atualizou dados do médico")
     })
-    @RequestMapping(value = "/update-settings", method = RequestMethod.POST)
+    @RequestMapping(value = "/update-settings", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> updateSettings(@RequestBody MedicDTO medicDTO) {
         logger.info("WebController - /update-settings called MedicDTO [{}]", medicDTO);
         return new ResponseEntity<>(medicService.updateData(medicDTO), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    @ApiOperation(value = "Retorna um pdf no padrão das UBS do relatório glicemico no período informado")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "Retorna o relatório em pdf"),
+//            @ApiResponse(code = 500, message = "Houve uma exceção")
+//    })
+    @RequestMapping(value = "/exportReport", method = RequestMethod.GET, produces = "application/pdf")
+    public void exportReport(HttpServletResponse response,
+                             @RequestHeader("documentNumber") String documentNumber,
+                             @RequestHeader("dateBegin") String dateBegin,
+                             @RequestHeader("dateEnd") String dateEnd) throws BaseBusinessException, ParseException {
+
+        logger.info("WebController - /exportReport called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
+
+        response.setContentType("application/pdf");
+
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=relatorio_" + currentDateTime + ".pdf";
+
+        response.setHeader(headerKey, headerValue);
+
+        reportService.export(response, measureService.getMeasuresFromInterval(documentNumber, dateBegin, dateEnd));
     }
 }

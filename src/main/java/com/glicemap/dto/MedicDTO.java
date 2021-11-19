@@ -17,7 +17,5 @@ public class MedicDTO implements Serializable {
     private String email;
     @JsonProperty("password")
     private String password;
-    @JsonProperty("birthdate")
-    private String birthdate;
 
 }

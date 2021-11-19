@@ -1,9 +1,8 @@
 package com.glicemap.builder;
 
-import com.glicemap.dto.*;
+import com.glicemap.dto.MeasureDTO;
+import com.glicemap.dto.PostMeasureDTO;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public final class PostMeasureBuilder {

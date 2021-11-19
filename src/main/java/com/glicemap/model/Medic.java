@@ -1,21 +1,35 @@
 package com.glicemap.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-// @Table(name = "medic")
+@Table(name = "medico")
 public class Medic {
     @Id
+    @Column(name = "crm", nullable = false, length = 20)
     private String CRM;
 
+    @Column(name = "nome", nullable = false, length = 60)
     private String name;
 
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
+    @Column(name = "senha", nullable = false, length = 30)
     private String password;
 
-    private String birthdate;
+    Medic() {
+    }
+
+    public Medic(String CRM, String name, String email, String password) {
+        this.CRM = CRM;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     public String getCRM() {
         return CRM;
@@ -47,14 +61,6 @@ public class Medic {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
     }
 
 }

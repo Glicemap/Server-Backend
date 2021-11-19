@@ -2,9 +2,6 @@ package com.glicemap.service;
 
 import com.glicemap.builder.NotificationBuilder;
 import com.glicemap.builder.NotificationsBuilder;
-import com.glicemap.builder.PatientMeasuresInfoBuilder;
-import com.glicemap.builder.PostMeasureBuilder;
-import com.glicemap.controller.WebController;
 import com.glicemap.dto.NotificationDTO;
 import com.glicemap.dto.NotificationsDTO;
 import com.glicemap.dto.NotificationsIdsDTO;
@@ -27,7 +24,7 @@ public class NotificationService {
     @Autowired
     private NotificationsBuilder notificationsBuilder;
 
-    public NotificationsDTO getNotifications(String CRM){
+    public NotificationsDTO getNotifications(String CRM) {
         logger.info("NotificationService - getNotifications - Getting notifications from CRM [{}]", CRM);
 
         List<NotificationDTO> listNotifications = new ArrayList<>();
