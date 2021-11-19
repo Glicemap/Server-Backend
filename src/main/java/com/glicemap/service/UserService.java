@@ -63,19 +63,12 @@ public class UserService {
             usuario = userRepository.findByEmail(loginDTO.getLogin());
             if (usuario == null) {
                 return Boolean.FALSE;
-            } else {
-                if (usuario.getPassword().equals(loginDTO.getPassword())) {
-                    return Boolean.TRUE;
-                } else {
-                    return Boolean.FALSE;
-                }
             }
+        }
+        if (usuario.getPassword().equals(loginDTO.getPassword())) {
+            return Boolean.TRUE;
         } else {
-            if (usuario.getPassword().equals(loginDTO.getPassword())) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
+            return Boolean.FALSE;
         }
     }
 
