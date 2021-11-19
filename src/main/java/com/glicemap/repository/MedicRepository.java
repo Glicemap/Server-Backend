@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 public interface MedicRepository extends JpaRepository<Medic, Long> {
 
     @Query("SELECT m FROM Medic m WHERE m.CRM = :crm")
-    Medic findByDocumentNumber(@Param("crm") String crm);
+    Medic findByCRM(@Param("crm") String crm);
+
+    @Query("SELECT m FROM Medic m WHERE m.email = :email")
+    Medic findByEmail(@Param("email") String email);
 
 }

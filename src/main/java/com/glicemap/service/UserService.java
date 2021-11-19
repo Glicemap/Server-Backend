@@ -5,7 +5,7 @@ import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
-import com.glicemap.model.Medic;
+import com.glicemap.model.MedicInvite;
 import com.glicemap.model.User;
 import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
@@ -16,13 +16,12 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class UserService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private MedicService medicService;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +34,9 @@ public class UserService {
 
     @Autowired
     private UserBuilder userBuilder;
+
+    @Autowired
+    private MedicInviteService medicInviteService;
 
     public User getUser(String documentNumber) {
         User user = userRepository.findByDocumentNumber(documentNumber);
@@ -125,7 +127,7 @@ public class UserService {
         }
 
         if (user.getMedic() == null) {
-            logger.error("UserService - deleteMedic Error - User doesn't have a doctor - DocumentNumber [{}]", documentNumber);
+            logger.error("UserService - deleteMedic Error - User doesn't have a medic - DocumentNumber [{}]", documentNumber);
             throw new BaseBusinessException("DELETE_MEDIC_ERROR_0002");
         }
 
@@ -135,16 +137,16 @@ public class UserService {
         return Boolean.TRUE;
     }
 
-    public Boolean addMedic(String documentNumber, String medicCRM) throws BaseBusinessException {
+    public Boolean addMedic(String documentNumber, String code) throws BaseBusinessException {
         User user = userRepository.findByDocumentNumber(documentNumber);
         if (user == null) {
             logger.error("UserService - addMedic Error - User doesn't exists - DocumentNumber [{}]", documentNumber);
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0001");
         }
 
-        Medic medic = medicService.getMedic(medicCRM);
-        if (medic == null) {
-            logger.error("UserService - addMedic Error - Medic doesn't exists - medicCRM [{}]", medicCRM);
+        MedicInvite medicInvite = medicInviteService.findByCode(code);
+        if (medicInvite == null) {
+            logger.error("UserService - addMedic Error - Code not valid - code [{}]", code);
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0002");
         }
 
@@ -153,7 +155,9 @@ public class UserService {
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0003");
         }
 
-        user.setMedic(medic);
+        medicInvite.setStatus(0);
+        medicInviteService.save(medicInvite);
+        user.setMedic(medicInvite.getMedic());
         user.setMedicJoin(new Date(System.currentTimeMillis()));
         userRepository.save(user);
         return Boolean.TRUE;
