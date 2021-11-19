@@ -22,8 +22,8 @@ public class MedicInviteService {
     @Autowired
     private MedicService medicService;
 
-    public MedicInvite findActiveByMedic(String crm) {
-        return medicInviteRepository.findActiveByMedic(crm);
+    public MedicInvite findActiveByMedic(Medic medic) {
+        return medicInviteRepository.findActiveByMedic(medic);
     }
 
     public void save(MedicInvite medicInvite) {
@@ -51,10 +51,11 @@ public class MedicInviteService {
         logger.info("MedicService - generateCode - Generating new code - CRM [{}]", CRM);
 
         // Invalida codigo atual se existir
-        MedicInvite currentInvite = this.findActiveByMedic(CRM);
+        Medic medic = medicService.getMedic(CRM);
+        MedicInvite currentInvite = this.findActiveByMedic(medic);
         logger.info("MedicService - generateCode - Current Invite [{}]", currentInvite);
         if (currentInvite != null) {
-            currentInvite.setStatus(0);
+            currentInvite.setStatus(false);
             this.save(currentInvite);
         }
 
@@ -69,8 +70,7 @@ public class MedicInviteService {
         } while (invite != null);
 
         // salva código
-        Medic medic = medicService.getMedic(CRM);
-        MedicInvite newInvite = new MedicInvite(code, 1, medic, new Date((System.currentTimeMillis())));
+        MedicInvite newInvite = new MedicInvite(code, true, medic, new Date((System.currentTimeMillis())));
         this.save(newInvite);
 
         return code;

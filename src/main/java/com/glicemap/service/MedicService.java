@@ -7,12 +7,14 @@ import com.glicemap.dto.*;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.indicator.FrequencyIndicator;
 import com.glicemap.model.Medic;
+import com.glicemap.model.User;
 import com.glicemap.repository.MedicRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,8 +97,29 @@ public class MedicService {
 
     public Boolean updateData(MedicDTO medicDTO) {
         logger.info("MedicService - updateData - Updating data for CRM [{}]", medicDTO.getCRM());
-        // aqui att na base pelo CRM
-        return Boolean.TRUE;
+        if ((this.isNullOrEmpty(medicDTO.getCRM())) || //
+                (this.isNullOrEmpty(medicDTO.getEmail())) || //
+                (this.isNullOrEmpty(medicDTO.getName()))) {
+            logger.error("MedicService - Update Info Error - Data Incomplete - MedicDTO [{}]", medicDTO);
+            throw new BaseBusinessException("UPDATE_INFO_ERROR_0001");
+        }
+
+        Medic medic = this.getMedic(medicDTO.getCRM());
+        logger.info("MedicService - update medic - Medic found: [{}]", medic);
+        if (medic == null) {
+            logger.error("MedicService - Update Info Error - Medic not found - CRM [{}]", medicDTO.getCRM());
+            throw new BaseBusinessException("UPDATE_INFO_ERROR_0002");
+        } else {
+            this.updateMedic(medic, medicDTO);
+            return Boolean.TRUE;
+        }
+    }
+
+    private void updateMedic(Medic medic, MedicDTO medicDTO) {
+        medic.setName(medicDTO.getName());
+        medic.setEmail(medicDTO.getEmail());
+        logger.info("MedicService - update medic - Medic updated: [{}]", medic);
+        medicRepository.save(medic);
     }
 
     public PatientsListDTO getPatients(GetPatientsDTO getPatientsDTO) {
