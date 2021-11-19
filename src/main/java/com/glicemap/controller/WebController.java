@@ -2,10 +2,7 @@ package com.glicemap.controller;
 
 import com.glicemap.dto.*;
 import com.glicemap.exception.BaseBusinessException;
-import com.glicemap.service.MeasureService;
-import com.glicemap.service.MedicService;
-import com.glicemap.service.NotificationService;
-import com.glicemap.service.ReportService;
+import com.glicemap.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -33,6 +30,9 @@ public class WebController {
     private MedicService medicService;
 
     @Autowired
+    private MedicInviteService medicInviteService;
+
+    @Autowired
     private NotificationService notificationService;
 
     @Autowired
@@ -50,14 +50,35 @@ public class WebController {
         return new ResponseEntity<>(String.format("Olá, %s! Você está no Web", name), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Efetua login de médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "REsultado do login")
+    })
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> login(@RequestBody LoginDTO loginDTO) {
+        logger.info("WebController - /login called! - Login [{}]", loginDTO);
+        return new ResponseEntity<>(medicService.login(loginDTO), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Cadastra novo médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cadastrou novo médico"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> signup(@RequestBody MedicDTO medicDTO) {
+        logger.info("WebController - /sign-up called! - MedicDTO [{}]", medicDTO);
+        return new ResponseEntity<>(medicService.signUp(medicDTO), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Gera código convite do médico")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna código de convite")
     })
     @RequestMapping(value = "/get-new-code", method = RequestMethod.GET)
-    public ResponseEntity<String> getNewCode() {
-        logger.info("WebController - /get-new-code called!");
-        return new ResponseEntity<>(medicService.generateCode(), HttpStatus.OK);
+    public ResponseEntity<String> getNewCode(@RequestHeader String CRM) {
+        logger.info("WebController - /get-new-code called! CRM [{}]", CRM);
+        return new ResponseEntity<>(medicInviteService.generateCode(CRM), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Lista pacientes")
@@ -124,7 +145,7 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Atualizou dados do médico")
     })
-    @RequestMapping(value = "/update-settings", method = RequestMethod.POST)
+    @RequestMapping(value = "/update-settings", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> updateSettings(@RequestBody MedicDTO medicDTO) {
         logger.info("WebController - /update-settings called MedicDTO [{}]", medicDTO);
         return new ResponseEntity<>(medicService.updateData(medicDTO), HttpStatus.OK);

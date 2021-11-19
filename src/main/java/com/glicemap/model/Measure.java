@@ -31,6 +31,19 @@ public class Measure {
     @Column(name = "observacoes", length = 200)
     private String observations;
 
+    Measure() {
+
+    }
+
+    public Measure(User user, Date createdDate, Situation situation, int sugarLevel, int insulin, String observations) {
+        this.user = user;
+        this.createdDate = createdDate;
+        this.situation = situation;
+        this.sugarLevel = sugarLevel;
+        this.insulin = insulin;
+        this.observations = observations;
+    }
+
     public int getCode() {
         return code;
     }

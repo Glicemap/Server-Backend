@@ -4,9 +4,12 @@ import com.glicemap.builder.DailyMeasuresBuilder;
 import com.glicemap.builder.DatesWithMeasuresBuilder;
 import com.glicemap.builder.MeasureBuilder;
 import com.glicemap.dto.*;
+import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.model.Measure;
 import com.glicemap.model.User;
 import com.glicemap.repository.MeasureRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ import java.util.List;
 
 @Service
 public class MeasureService {
+    Logger logger = LoggerFactory.getLogger(MeasureService.class);
+
     @Autowired
     private DatesWithMeasuresBuilder datesWithMeasuresBuilder;
 
@@ -38,7 +43,8 @@ public class MeasureService {
     private MeasureRepository measureRepository;
 
     public DatesWithMeasuresDTO getDaysWithMeasure(String documentNumber, String date) throws ParseException {
-        List<Measure> measures = measureRepository.findByMonth(documentNumber, this.stringToDate(date));
+        User user = userService.getUser(documentNumber);
+        List<Measure> measures = measureRepository.findByMonth(user, this.stringToDate(date));
         List<String> listDates = new ArrayList<>();
 
         for (Measure measure : measures) {
@@ -49,14 +55,15 @@ public class MeasureService {
     }
 
     public DailyMeasuresDTO getDailyMeasures(String documentNumber, String date) throws ParseException {
-        List<Measure> measures = measureRepository.findByDate(documentNumber, this.stringToDate(date));
+        User user = userService.getUser(documentNumber);
+        List<Measure> measures = measureRepository.findByDate(user, this.stringToDate(date));
 
         List<MeasureDTO> measuresDTOS = new ArrayList<>();
 
         for (Measure measure : measures) {
             MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
                     .setObservations(measure.getObservations())
-                    .setSituation(measure.getSituation().getSituation().getString())
+                    .setSituation(measure.getSituation().getSituation())
                     .setSugarLevel(Integer.toString(measure.getSugarLevel()))
                     .build();
             measuresDTOS.add(measureDTO);
@@ -68,13 +75,20 @@ public class MeasureService {
     public Boolean postMeasure(PostMeasureDTO postMeasureDTO) throws ParseException {
         User user = userService.getUser(postMeasureDTO.getDocumentNumber());
 
-        Measure measure = new Measure();
-        measure.setCreatedDate(this.stringToDate(postMeasureDTO.getDate()));
-        measure.setUser(user);
-        measure.setInsulin(Integer.parseInt(postMeasureDTO.getMeasure().getInsulin()));
-        measure.setObservations(postMeasureDTO.getMeasure().getObservations());
-        measure.setSituation(situationService.getSituationBySituation(postMeasureDTO.getMeasure().getSituation()));
-        measure.setSugarLevel(Integer.parseInt(postMeasureDTO.getMeasure().getSugarLevel()));
+        if (user == null) {
+            logger.error("MeasureService - postMeasure Error - User doesn't exists - DocumentNumber [{}]", postMeasureDTO.getDocumentNumber());
+            throw new BaseBusinessException("POST_MEASURE_ERROR_0001");
+        }
+
+        MeasureDTO measureDTO = postMeasureDTO.getMeasure();
+
+        Measure measure = new Measure(user, //
+                this.stringToDate(postMeasureDTO.getDate()), //
+                situationService.getSituationBySituation(measureDTO.getSituation()), //
+                Integer.parseInt(measureDTO.getSugarLevel()), //
+                Integer.parseInt(measureDTO.getInsulin()), //
+                measureDTO.getObservations()); //
+
         measureRepository.save(measure);
 
         return Boolean.TRUE;
@@ -83,8 +97,9 @@ public class MeasureService {
     public List<DailyMeasuresDTO> getMeasuresFromInterval(String documentNumber, String dateBegin, String dateEnd) throws ParseException {
         List<DailyMeasuresDTO> dailyMeasuresList = new ArrayList<>();
         List<java.util.Date> dates = new ArrayList<>();
+        User user = userService.getUser(documentNumber);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date endDate = sdf.parse(dateEnd);
         java.util.Date startDate = sdf.parse(dateBegin);
 
@@ -98,30 +113,30 @@ public class MeasureService {
 
         for (java.util.Date date : dates) {
             DailyMeasuresDTO dailyMeasures = new DailyMeasuresDTO();
-            dailyMeasures.setDate(date.toString());
+            dailyMeasures.setDate(sdf.format(date));
 
-            List<Measure> measures = measureRepository.findByDate(documentNumber, new Date(date.getTime()));
+            List<Measure> measures = measureRepository.findByDate(user, new Date(date.getTime()));
 
             List<MeasureDTO> measuresDTO = new ArrayList<>();
 
             for (Measure measure : measures) {
                 MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
                         .setObservations(measure.getObservations())
-                        .setSituation(measure.getSituation().getSituation().getString())
+                        .setSituation(measure.getSituation().getSituation())
                         .setSugarLevel(Integer.toString(measure.getSugarLevel()))
                         .build();
 
                 measuresDTO.add(measureDTO);
             }
-
             dailyMeasures.setMeasures(measuresDTO);
+            dailyMeasuresList.add(dailyMeasures);
         }
 
         return dailyMeasuresList;
     }
 
     private Date stringToDate(String dateString) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date dateUtil = sdf.parse(dateString);
         return new Date(dateUtil.getTime());
     }

@@ -1,11 +1,13 @@
 package com.glicemap.service;
 
-import com.glicemap.builder.*;
+import com.glicemap.builder.MedicBuilder;
+import com.glicemap.builder.UserBuilder;
+import com.glicemap.builder.UserMedicInfoBuilder;
 import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
-import com.glicemap.model.Medic;
+import com.glicemap.model.MedicInvite;
 import com.glicemap.model.User;
 import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
@@ -21,8 +23,6 @@ import java.text.SimpleDateFormat;
 public class UserService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private MedicService medicService;
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +36,9 @@ public class UserService {
     @Autowired
     private UserBuilder userBuilder;
 
+    @Autowired
+    private MedicInviteService medicInviteService;
+
     public User getUser(String documentNumber) {
         User user = userRepository.findByDocumentNumber(documentNumber);
         if (user == null) {
@@ -47,7 +50,11 @@ public class UserService {
 
     public UserMedicInfoDTO getUserMedicInfo(String documentNumber) {
         User user = this.getUser(documentNumber);
-        return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
+        if (user.getMedic() != null) {
+            return userMedicInfoBuilder.setMedic(medicBuilder.buildModel(user.getMedic())).setUser(userBuilder.buildModel(user)).build();
+        } else {
+            return userMedicInfoBuilder.setMedic(null).setUser(userBuilder.buildModel(user)).build();
+        }
     }
 
     public Boolean login(LoginDTO loginDTO) {
@@ -78,7 +85,7 @@ public class UserService {
 
     public Boolean signUp(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
-                (userDTO.getBirthdate() == null) || //
+                (this.isNullOrEmpty(userDTO.getBirthdate())) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
                 (this.isNullOrEmpty(userDTO.getName())) || //
                 (this.isNullOrEmpty(userDTO.getPassword())) || //
@@ -121,7 +128,7 @@ public class UserService {
         }
 
         if (user.getMedic() == null) {
-            logger.error("UserService - deleteMedic Error - User doesn't have a doctor - DocumentNumber [{}]", documentNumber);
+            logger.error("UserService - deleteMedic Error - User doesn't have a medic - DocumentNumber [{}]", documentNumber);
             throw new BaseBusinessException("DELETE_MEDIC_ERROR_0002");
         }
 
@@ -131,16 +138,16 @@ public class UserService {
         return Boolean.TRUE;
     }
 
-    public Boolean addMedic(String documentNumber, String medicCRM) throws BaseBusinessException {
+    public Boolean addMedic(String documentNumber, String code) throws BaseBusinessException {
         User user = userRepository.findByDocumentNumber(documentNumber);
         if (user == null) {
             logger.error("UserService - addMedic Error - User doesn't exists - DocumentNumber [{}]", documentNumber);
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0001");
         }
 
-        Medic medic = medicService.getMedic(medicCRM);
-        if (medic == null) {
-            logger.error("UserService - addMedic Error - Medic doesn't exists - medicCRM [{}]", medicCRM);
+        MedicInvite medicInvite = medicInviteService.findByCode(code);
+        if (medicInvite == null) {
+            logger.error("UserService - addMedic Error - Code not valid - code [{}]", code);
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0002");
         }
 
@@ -149,7 +156,9 @@ public class UserService {
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0003");
         }
 
-        user.setMedic(medic);
+        medicInvite.setStatus(0);
+        medicInviteService.save(medicInvite);
+        user.setMedic(medicInvite.getMedic());
         user.setMedicJoin(new Date(System.currentTimeMillis()));
         userRepository.save(user);
         return Boolean.TRUE;
@@ -157,7 +166,7 @@ public class UserService {
 
     public Boolean updateInfo(UserDTO userDTO) throws BaseBusinessException, ParseException {
         if ((this.isNullOrEmpty(userDTO.getDocumentNumber())) || //
-                (userDTO.getBirthdate() != null) || //
+                (this.isNullOrEmpty(userDTO.getBirthdate())) || //
                 (this.isNullOrEmpty(userDTO.getEmail())) || //
                 (this.isNullOrEmpty(userDTO.getName())) || //
                 (this.isNullOrEmpty(userDTO.getPassword())) || //
@@ -169,13 +178,13 @@ public class UserService {
             throw new BaseBusinessException("UPDATE_INFO_ERROR_0001");
         }
 
-        User usuario = userRepository.findByDocumentNumber(userDTO.getDocumentNumber());
-
-        if (usuario == null) {
+        User user = userRepository.findByDocumentNumber(userDTO.getDocumentNumber());
+        logger.info("UserService - update user - User found: [{}]", user);
+        if (user == null) {
             logger.error("UserService - Update Info Error - User not found - Document Number [{}]", userDTO.getDocumentNumber());
             throw new BaseBusinessException("UPDATE_INFO_ERROR_0002");
         } else {
-            this.updateUser(usuario, userDTO);
+            this.updateUser(user, userDTO);
             return Boolean.TRUE;
         }
     }
@@ -188,7 +197,7 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setBirthdate(this.stringToDate(userDTO.getBirthdate()));
         user.setHeight(userDTO.getHeight());
-
+        logger.info("UserService - update user - User updated: [{}]", user);
         userRepository.save(user);
     }
 

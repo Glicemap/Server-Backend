@@ -53,7 +53,7 @@ public class AppController {
             @ApiResponse(code = 200, message = "Retorna se o login foi correto ou não"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<Boolean> userLogin(@RequestBody LoginDTO loginDTO) {
         logger.info("AppController - /login called! LoginDTO = [{}]", loginDTO);
         return new ResponseEntity<>(userService.login(loginDTO), HttpStatus.OK);
@@ -77,7 +77,7 @@ public class AppController {
             @ApiResponse(code = 200, message = "Atualização efetuada"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateInfo", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> updateInfo(@RequestBody UserDTO userDTO) throws BaseBusinessException, ParseException {
         logger.info("AppController - /updateInfo called! UserDTO = [{}]", userDTO);
         return new ResponseEntity<>(userService.updateInfo(userDTO), HttpStatus.OK);
@@ -102,9 +102,9 @@ public class AppController {
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
     @RequestMapping(value = "/addMedic", method = RequestMethod.PUT)
-    public ResponseEntity<Boolean> addMedic(@RequestHeader String documentNumber, @RequestHeader String medicCRM) throws BaseBusinessException {
-        logger.info("AppController - /addMedic called! documentNumber = [{}], medicCRM = [{}]", documentNumber, medicCRM);
-        return new ResponseEntity<>(userService.addMedic(documentNumber, medicCRM), HttpStatus.OK);
+    public ResponseEntity<Boolean> addMedic(@RequestHeader String documentNumber, @RequestHeader String code) throws BaseBusinessException {
+        logger.info("AppController - /addMedic called! documentNumber = [{}], code = [{}]", documentNumber, code);
+        return new ResponseEntity<>(userService.addMedic(documentNumber, code), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)

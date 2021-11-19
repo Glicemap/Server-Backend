@@ -20,12 +20,16 @@ public class SituationService {
 
         Situation situation = situationRepository.findByCode(id);
 
-        return situation.getSituation().toString();
+        return situation.getSituation();
     }
 
     public Situation getSituationBySituation(String situation) {
         logger.info("Situation Service - getSituationBySituation - Getting situation from Situation [{}]", situation);
-        return situationRepository.findBySituation(situation);
+        Situation situationObject = situationRepository.findBySituation(situation);
+        if (situationObject != null) {
+            logger.info("Situation Service - getSituationBySituation - Situation found [{}]", situationObject.getSituation());
+        }
+        return situationObject;
     }
 }
 

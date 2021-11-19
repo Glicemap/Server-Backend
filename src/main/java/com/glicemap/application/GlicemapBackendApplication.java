@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.glicemap")
-@EnableJpaRepositories(basePackages={"com.glicemap.repository"})
+@EnableJpaRepositories(basePackages = {"com.glicemap.repository"})
 @EntityScan("com.glicemap.model")
 public class GlicemapBackendApplication {
 
