@@ -61,19 +61,12 @@ public class MedicService {
             medic = medicRepository.findByEmail(loginDTO.getLogin());
             if (medic == null) {
                 return Boolean.FALSE;
-            } else {
-                if (medic.getPassword().equals(loginDTO.getPassword())) {
-                    return Boolean.TRUE;
-                } else {
-                    return Boolean.FALSE;
-                }
             }
+        }
+        if (medic.getPassword().equals(loginDTO.getPassword())) {
+            return Boolean.TRUE;
         } else {
-            if (medic.getPassword().equals(loginDTO.getPassword())) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
+            return Boolean.FALSE;
         }
     }
 
