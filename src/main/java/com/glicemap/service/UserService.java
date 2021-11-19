@@ -8,6 +8,7 @@ import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.model.MedicInvite;
+import com.glicemap.model.Notification;
 import com.glicemap.model.User;
 import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class UserService {
 
     @Autowired
     private MedicInviteService medicInviteService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public User getUser(String documentNumber) {
         User user = userRepository.findByDocumentNumber(documentNumber);
@@ -125,6 +129,8 @@ public class UserService {
             throw new BaseBusinessException("DELETE_MEDIC_ERROR_0002");
         }
 
+        Notification notification = new Notification(user.getMedic(), user, false);
+        notificationService.save(notification);
         user.setMedic(null);
         user.setMedicJoin(null);
         userRepository.save(user);
@@ -149,11 +155,13 @@ public class UserService {
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0003");
         }
 
-        medicInvite.setStatus(0);
+        medicInvite.setStatus(false);
         medicInviteService.save(medicInvite);
         user.setMedic(medicInvite.getMedic());
         user.setMedicJoin(new Date(System.currentTimeMillis()));
         userRepository.save(user);
+        Notification notification = new Notification(medicInvite.getMedic(), user, true);
+        notificationService.save(notification);
         return Boolean.TRUE;
     }
 
