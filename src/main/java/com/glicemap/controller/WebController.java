@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,9 +96,9 @@ public class WebController {
             @ApiResponse(code = 200, message = "Retorna as medições do paciente")
     })
     @RequestMapping(value = "/patients/{documentNumber}", method = RequestMethod.GET)
-    public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@PathParam("documentNumber") String documentNumber, @RequestHeader String CRM, @RequestBody GetPatientDTO getPatientDTO) {
-        logger.info("WebController - /patient/{} called GetPatientDTO [{}]", documentNumber, getPatientDTO);
-        return new ResponseEntity<>(measureService.getMeasuresInfo(getPatientDTO), HttpStatus.OK);
+    public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@PathVariable("documentNumber") String documentNumber, @RequestHeader String CRM, @RequestBody GetPatientDTO getPatientDTO) throws ParseException {
+        logger.info("WebController - /patients/{} called GetPatientDTO [{}]", documentNumber, getPatientDTO);
+        return new ResponseEntity<>(measureService.getMeasuresInfo(documentNumber, getPatientDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca notificações")

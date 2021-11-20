@@ -3,6 +3,7 @@ package com.glicemap.service;
 import com.glicemap.builder.DailyMeasuresBuilder;
 import com.glicemap.builder.DatesWithMeasuresBuilder;
 import com.glicemap.builder.MeasureBuilder;
+import com.glicemap.builder.PatientMeasuresInfoBuilder;
 import com.glicemap.dto.*;
 import com.glicemap.exception.BaseBusinessException;
 import com.glicemap.model.Measure;
@@ -29,6 +30,9 @@ public class MeasureService {
 
     @Autowired
     private DailyMeasuresBuilder dailyMeasuresBuilder;
+
+    @Autowired
+    private PatientMeasuresInfoBuilder patientMeasuresInfoBuilder;
 
     @Autowired
     private MeasureBuilder measureBuilder;
@@ -58,18 +62,10 @@ public class MeasureService {
 
     public DailyMeasuresDTO getDailyMeasures(String documentNumber, String date) throws ParseException {
         User user = userService.getUser(documentNumber);
+
         List<Measure> measures = measureRepository.findByDate(user, this.stringToDate(date));
 
-        List<MeasureDTO> measuresDTOS = new ArrayList<>();
-
-        for (Measure measure : measures) {
-            MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
-                    .setObservations(measure.getObservations())
-                    .setSituation(measure.getSituation().getSituation())
-                    .setSugarLevel(Integer.toString(measure.getSugarLevel()))
-                    .build();
-            measuresDTOS.add(measureDTO);
-        }
+        List<MeasureDTO> measuresDTOS = measureBuilder.buildModelList(measures);
 
         return dailyMeasuresBuilder.setMeasures(measuresDTOS).setDate(date).build();
     }
@@ -97,48 +93,20 @@ public class MeasureService {
     }
 
     public List<DailyMeasuresDTO> getMeasuresFromInterval(String documentNumber, String dateBegin, String dateEnd) throws ParseException {
-        List<DailyMeasuresDTO> dailyMeasuresList = new ArrayList<>();
-        List<java.util.Date> dates = new ArrayList<>();
         User user = userService.getUser(documentNumber);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date endDate = sdf.parse(dateEnd);
         java.util.Date startDate = sdf.parse(dateBegin);
 
-        while (!startDate.after(endDate)) {
-            dates.add(startDate);
-            Calendar c = Calendar.getInstance();
-            c.setTime(startDate);
-            c.add(Calendar.DATE, 1);
-            startDate = c.getTime();
-        }
+        List<Measure> measures = measureRepository.findByDateInterval(user, new Date(startDate.getTime()), new Date(endDate.getTime()));
 
-        for (java.util.Date date : dates) {
-            DailyMeasuresDTO dailyMeasures = new DailyMeasuresDTO();
-            dailyMeasures.setDate(sdf.format(date));
-
-            List<Measure> measures = measureRepository.findByDate(user, new Date(date.getTime()));
-
-            List<MeasureDTO> measuresDTO = new ArrayList<>();
-
-            for (Measure measure : measures) {
-                MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
-                        .setObservations(measure.getObservations())
-                        .setSituation(measure.getSituation().getSituation())
-                        .setSugarLevel(Integer.toString(measure.getSugarLevel()))
-                        .build();
-
-                measuresDTO.add(measureDTO);
-            }
-            dailyMeasures.setMeasures(measuresDTO);
-            dailyMeasuresList.add(dailyMeasures);
-        }
-
-        return dailyMeasuresList;
+        return dailyMeasuresBuilder.buildModelList(measures);
     }
 
-    public int getMeasuresPercentageFromLastMonth(User user) {
+    public PercentagesDTO getMeasuresPercentageFromLastMonth(User user) {
         float countDaysWithMeasure = 0;
+        float countDaysWithMeasureRight = 0;
         java.util.Date endDate = new java.util.Date(System.currentTimeMillis());
 
         // pega dia de um mes atras
@@ -157,9 +125,18 @@ public class MeasureService {
                 listDates.add(measure.getCreatedDate().toString());
                 countDaysWithMeasure++;
             }
+            if (measure.getSugarLevel() <= user.getSugarMax() && measure.getSugarLevel() >= user.getSugarMin()) {
+                countDaysWithMeasureRight++;
+            }
         }
 
-        return Math.round((countDaysWithMeasure / 30) * 100);
+        PercentagesDTO percentages = new PercentagesDTO();
+
+        percentages.setPercentageTotal(Math.round((countDaysWithMeasure / 30) * 100));
+
+        percentages.setPercentageRight(Math.round((countDaysWithMeasureRight / measures.size()) * 100));
+
+        return percentages;
     }
 
     private Date stringToDate(String dateString) throws ParseException {
@@ -168,8 +145,87 @@ public class MeasureService {
         return new Date(dateUtil.getTime());
     }
 
-    public PatientMeasuresInfoDTO getMeasuresInfo(GetPatientDTO getPatientDTO) {
-        return new PatientMeasuresInfoDTO();
+    public PatientMeasuresInfoDTO getMeasuresInfo(String documentNumber, GetPatientDTO getPatientDTO) throws ParseException {
+        User user = userService.getUser(documentNumber);
+        Date dateFrom;
+        Date dateTo;
+
+        if (getPatientDTO.getFrom() == null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new java.util.Date(System.currentTimeMillis()));
+            c.add(Calendar.MONTH, -1);
+            dateFrom = new Date(c.getTime().getTime());
+        } else {
+            dateFrom = this.stringToDate(getPatientDTO.getFrom());
+        }
+
+        if (getPatientDTO.getTo() == null) {
+            dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
+        } else {
+            dateTo = this.stringToDate(getPatientDTO.getTo());
+        }
+
+        List<Measure> measures = measureRepository.findByDateInterval(user, dateFrom, dateTo);
+
+        List<DailyMeasuresDTO> dailyMeasureDTOList = dailyMeasuresBuilder.buildModelList(measures);
+
+        return patientMeasuresInfoBuilder.setName(user.getFullName())
+                .setMeasures(dailyMeasureDTOList)
+                .setFrequencys(this.getFrequencyChart(measures))
+                .setLow((this.getDaysWithFrequency(dailyMeasureDTOList, 0)))
+                .setMidlow((this.getDaysWithFrequency(dailyMeasureDTOList, 1)))
+                .setMidhigh((this.getDaysWithFrequency(dailyMeasureDTOList, 2)))
+                .setHigh((this.getDaysWithFrequency(dailyMeasureDTOList, 3)))
+                .build();
+    }
+
+    private List<String> getDaysWithFrequency(List<DailyMeasuresDTO> dailyMeasureList, int level) {
+        int[][] levels = {{0, 1}, {2, 2}, {3, 3}, {4, 5000}};
+        List<String> dates = new ArrayList<>();
+
+        for (DailyMeasuresDTO dailyMeasure : dailyMeasureList) {
+            if (dailyMeasure.getMeasures().size() >= levels[level][0] && dailyMeasure.getMeasures().size() <= levels[level][1]) {
+                dates.add(dailyMeasure.getDate());
+            }
+        }
+
+        return dates;
+    }
+
+
+    private List<String> getFrequencyChart(List<Measure> measures) {
+        int[] frequencysInt = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        for (Measure measure : measures) {
+            final int sugarLevel = measure.getSugarLevel();
+            if (sugarLevel <= 50) {
+                frequencysInt[0]++;
+            } else if (sugarLevel <= 100) {
+                frequencysInt[1]++;
+            } else if (sugarLevel <= 150) {
+                frequencysInt[2]++;
+            } else if (sugarLevel <= 200) {
+                frequencysInt[3]++;
+            } else if (sugarLevel <= 250) {
+                frequencysInt[4]++;
+            } else if (sugarLevel <= 300) {
+                frequencysInt[5]++;
+            } else if (sugarLevel <= 350) {
+                frequencysInt[6]++;
+            } else if (sugarLevel <= 400) {
+                frequencysInt[7]++;
+            } else {
+                frequencysInt[8]++;
+            }
+        }
+
+        List<String> frequencysString = new ArrayList<>();
+
+        for (int value : frequencysInt) {
+            frequencysString.add(Integer.toString(value));
+        }
+
+        return frequencysString;
     }
 
 }

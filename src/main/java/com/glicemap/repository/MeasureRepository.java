@@ -19,7 +19,7 @@ public interface MeasureRepository extends JpaRepository<Measure, Long> {
     @Query("SELECT m FROM Measure m WHERE m.user = :user AND m.createdDate = :date")
     List<Measure> findByDate(@Param("user") User user, @Param("date") Date date);
 
-    @Query("SELECT m FROM Measure m WHERE m.user = :user AND m.createdDate >= :dateStart AND m.createdDate <= :dateEnd")
+    @Query("SELECT m FROM Measure m WHERE m.user = :user AND m.createdDate >= :dateStart AND m.createdDate <= :dateEnd ORDER BY m.createdDate DESC")
     List<Measure> findByDateInterval(@Param("user") User user, @Param("dateStart") Date dateStart, @Param("dateEnd") Date dateEnd);
 
 }
