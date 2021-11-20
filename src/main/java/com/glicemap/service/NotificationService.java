@@ -43,7 +43,7 @@ public class NotificationService {
         List<NotificationDTO> listNotifications = new ArrayList<>();
         for (Notification notification : notifications) {
             User user = notification.getUser();
-            String text = String.format("%s %s %s a você.", user.getName(), user.getLastName(), notification.isType() ? "vinculou-se" : "desvinculou-se");
+            String text = String.format("%s %s a você.", user.getFullName(), notification.isType() ? "vinculou-se" : "desvinculou-se");
             NotificationDTO notificationDTO = notificationBuilder.setRead(notification.isRead())
                     .setText(text)
                     .setId(Integer.toString(notification.getCode())).build();

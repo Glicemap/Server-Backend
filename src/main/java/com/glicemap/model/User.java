@@ -61,6 +61,10 @@ public class User {
         this.sugarMax = sugarMax;
     }
 
+    public String getFullName(){
+        return this.name + " " + this.lastName;
+    }
+
     public String getDocumentNumber() {
         return documentNumber;
     }

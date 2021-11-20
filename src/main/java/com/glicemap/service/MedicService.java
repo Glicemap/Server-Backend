@@ -147,18 +147,17 @@ public class MedicService {
 
         Date dateFrom;
         Date dateTo;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         if (getPatientsDTO.getFrom() == null) {
-            dateFrom = new Date(sdf.parse("01-01-2000").getTime());
+            dateFrom = this.stringToDate("01-01-2000");
         } else {
-            dateFrom = new Date(sdf.parse(getPatientsDTO.getFrom()).getTime());
+            dateFrom = this.stringToDate(getPatientsDTO.getFrom());
         }
 
         if (getPatientsDTO.getTo() == null) {
             dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
         } else {
-            dateTo = new Date(sdf.parse(getPatientsDTO.getTo()).getTime());
+            dateTo = this.stringToDate(getPatientsDTO.getTo());
         }
 
         List<User> patientList;
@@ -175,22 +174,22 @@ public class MedicService {
         List<PatientPreviewDTO> patientsList = new ArrayList<>();
 
         for (User patient : patients) {
-            int percentage = measureService.getMeasuresPercentageFromLastMonth(patient);
-            String percentageString = Integer.toString(percentage);
+            PercentagesDTO percentages = measureService.getMeasuresPercentageFromLastMonth(patient);
+            String percentageRightString = Integer.toString(percentages.getPercentageRight());
 
             FrequencyIndicator frequency;
 
-            if (percentage > 80) {
+            if (percentages.getPercentageTotal() > 80) {
                 frequency = FrequencyIndicator.high;
-            } else if (percentage > 60) {
+            } else if (percentages.getPercentageTotal() > 60) {
                 frequency = FrequencyIndicator.medium;
             } else {
                 frequency = FrequencyIndicator.low;
             }
 
             PatientPreviewDTO patientPreviewDTO = patientPreviewBuilder.setDocumentNumber(patient.getDocumentNumber())
-                    .setName(patient.getName() + " " + patient.getLastName())
-                    .setPercentage(percentageString)
+                    .setName(patient.getFullName())
+                    .setPercentage(percentageRightString)
                     .setFrequency(frequency)
                     .build();
 
@@ -198,6 +197,12 @@ public class MedicService {
         }
 
         return patientsListBuilder.setPatients(patientsList).build();
+    }
+
+    private Date stringToDate(String dateString) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        java.util.Date dateUtil = sdf.parse(dateString);
+        return new Date(dateUtil.getTime());
     }
 
     private PatientsListDTO filterFrequency(PatientsListDTO patients, FrequencyIndicator frequency) {
