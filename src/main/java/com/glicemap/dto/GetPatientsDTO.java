@@ -11,8 +11,6 @@ public class GetPatientsDTO implements Serializable {
 
     private static final long serialVersionUID = 9100458028493780102L;
 
-    @JsonProperty("CRM")
-    private String CRM;
     @JsonProperty("name")
     private String name;
     @JsonProperty("from")

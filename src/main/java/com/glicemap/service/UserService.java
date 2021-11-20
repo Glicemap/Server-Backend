@@ -7,7 +7,9 @@ import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
+import com.glicemap.model.Medic;
 import com.glicemap.model.MedicInvite;
+import com.glicemap.model.Notification;
 import com.glicemap.model.User;
 import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -38,6 +41,9 @@ public class UserService {
 
     @Autowired
     private MedicInviteService medicInviteService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public User getUser(String documentNumber) {
         User user = userRepository.findByDocumentNumber(documentNumber);
@@ -125,6 +131,8 @@ public class UserService {
             throw new BaseBusinessException("DELETE_MEDIC_ERROR_0002");
         }
 
+        Notification notification = new Notification(user.getMedic(), user, false);
+        notificationService.save(notification);
         user.setMedic(null);
         user.setMedicJoin(null);
         userRepository.save(user);
@@ -149,11 +157,13 @@ public class UserService {
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0003");
         }
 
-        medicInvite.setStatus(0);
+        medicInvite.setStatus(false);
         medicInviteService.save(medicInvite);
         user.setMedic(medicInvite.getMedic());
         user.setMedicJoin(new Date(System.currentTimeMillis()));
         userRepository.save(user);
+        Notification notification = new Notification(medicInvite.getMedic(), user, true);
+        notificationService.save(notification);
         return Boolean.TRUE;
     }
 
@@ -180,6 +190,14 @@ public class UserService {
             this.updateUser(user, userDTO);
             return Boolean.TRUE;
         }
+    }
+
+    public List<User> findByNameLikeAndDatesAndMedic(Medic medic, String nome, Date dateFrom, Date dateTo) {
+        return userRepository.findByNameLikeAndDatesAndMedic(medic, nome, dateFrom, dateTo);
+    }
+
+    public List<User> findByDatesAndMedic(Medic medic, Date dateFrom, Date dateTo) {
+        return userRepository.findByDatesAndMedic(medic, dateFrom, dateTo);
     }
 
     private void updateUser(User user, UserDTO userDTO) throws ParseException {

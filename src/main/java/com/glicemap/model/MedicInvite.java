@@ -9,8 +9,9 @@ public class MedicInvite {
     @Id
     @Column(name = "codigo", nullable = false, length = 6)
     private String code;
+
     @Column(name = "status_codigo", nullable = false)
-    private int status;
+    private boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "crm_medico")
@@ -22,7 +23,7 @@ public class MedicInvite {
     MedicInvite() {
     }
 
-    public MedicInvite(String code, int status, Medic medic, Date createdDate) {
+    public MedicInvite(String code, boolean status, Medic medic, Date createdDate) {
         this.code = code;
         this.status = status;
         this.medic = medic;
@@ -37,11 +38,11 @@ public class MedicInvite {
         this.code = code;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

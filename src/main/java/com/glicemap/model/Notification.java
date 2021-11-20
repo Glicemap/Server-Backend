@@ -6,11 +6,18 @@ import javax.persistence.*;
 @Table(name = "notificacao")
 public class Notification {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private int code;
 
     @Column(name = "status_notificacao", nullable = false)
-    private int status;
+    private boolean status;
+
+    @Column(name = "lido", nullable = false)
+    private boolean read; // true - lido / false - nao lido
+
+    @Column(name = "tipo", nullable = false)
+    private boolean type; // true - vinculou / false - desvinculou
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "crm_medico")
@@ -20,6 +27,18 @@ public class Notification {
     @JoinColumn(name = "cpf_paciente")
     private User user;
 
+    Notification() {
+
+    }
+
+    public Notification(Medic medic, User user, boolean type) {
+        this.status = true;
+        this.read = false;
+        this.medic = medic;
+        this.user = user;
+        this.type = type;
+    }
+
     public int getCode() {
         return code;
     }
@@ -28,12 +47,8 @@ public class Notification {
         this.code = code;
     }
 
-    public int getStatus() {
+    public boolean getStatus() {
         return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public Medic getMedic() {
@@ -50,5 +65,29 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public boolean isType() {
+        return type;
+    }
+
+    public void setType(boolean type) {
+        this.type = type;
     }
 }

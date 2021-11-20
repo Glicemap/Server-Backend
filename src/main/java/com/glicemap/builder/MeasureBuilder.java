@@ -1,7 +1,11 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.MeasureDTO;
+import com.glicemap.model.Measure;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public final class MeasureBuilder {
@@ -37,5 +41,22 @@ public final class MeasureBuilder {
         measureDTO.setSituation(situation);
         measureDTO.setObservations(observations);
         return measureDTO;
+    }
+
+    public MeasureDTO buildModel(Measure measure) {
+        MeasureDTO measureDTO = new MeasureDTO();
+        measureDTO.setSugarLevel(Integer.toString(measure.getSugarLevel()));
+        measureDTO.setInsulin(Integer.toString(measure.getInsulin()));
+        measureDTO.setSituation(measure.getSituation().getSituation());
+        measureDTO.setObservations(measure.getObservations());
+        return measureDTO;
+    }
+
+    public List<MeasureDTO> buildModelList(List<Measure> measures) {
+        List<MeasureDTO> measuresDTO = new ArrayList<>();
+        for (Measure measure : measures) {
+            measuresDTO.add(this.buildModel(measure));
+        }
+        return measuresDTO;
     }
 }
