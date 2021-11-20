@@ -43,12 +43,12 @@ public class DailyMeasuresBuilder {
         HashMap<Date, List<MeasureDTO>> dailyMeasures = new HashMap<>();
         List<DailyMeasuresDTO> dailyMeasuresListDTO = new ArrayList<>();
 
-        for(Measure measure : measures){
+        for (Measure measure : measures) {
             dailyMeasures.putIfAbsent(measure.getCreatedDate(), new ArrayList<>());
             dailyMeasures.get(measure.getCreatedDate()).add(measureBuilder.buildModel(measure));
         }
 
-        for (Date date : dailyMeasures.keySet()){
+        for (Date date : dailyMeasures.keySet()) {
             DailyMeasuresDTO dailyMeasuresDTO = new DailyMeasuresDTO();
             dailyMeasuresDTO.setDate(this.dateToString(date));
             dailyMeasuresDTO.setMeasures(dailyMeasures.get(date));

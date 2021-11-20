@@ -125,7 +125,7 @@ public class MeasureService {
                 listDates.add(measure.getCreatedDate().toString());
                 countDaysWithMeasure++;
             }
-            if(measure.getSugarLevel() <= user.getSugarMax() && measure.getSugarLevel() >= user.getSugarMin()){
+            if (measure.getSugarLevel() <= user.getSugarMax() && measure.getSugarLevel() >= user.getSugarMin()) {
                 countDaysWithMeasureRight++;
             }
         }
@@ -170,21 +170,21 @@ public class MeasureService {
         List<DailyMeasuresDTO> dailyMeasureDTOList = dailyMeasuresBuilder.buildModelList(measures);
 
         return patientMeasuresInfoBuilder.setName(user.getFullName())
-                                         .setMeasures(dailyMeasureDTOList)
-                                         .setFrequencys(this.getFrequencyChart(measures))
-                                         .setLow((this.getDaysWithFrequency(dailyMeasureDTOList, 0)))
-                                         .setMidlow((this.getDaysWithFrequency(dailyMeasureDTOList, 1)))
-                                         .setMidhigh((this.getDaysWithFrequency(dailyMeasureDTOList, 2)))
-                                         .setHigh((this.getDaysWithFrequency(dailyMeasureDTOList, 3)))
-                                         .build();
+                .setMeasures(dailyMeasureDTOList)
+                .setFrequencys(this.getFrequencyChart(measures))
+                .setLow((this.getDaysWithFrequency(dailyMeasureDTOList, 0)))
+                .setMidlow((this.getDaysWithFrequency(dailyMeasureDTOList, 1)))
+                .setMidhigh((this.getDaysWithFrequency(dailyMeasureDTOList, 2)))
+                .setHigh((this.getDaysWithFrequency(dailyMeasureDTOList, 3)))
+                .build();
     }
 
-    private List<String> getDaysWithFrequency(List<DailyMeasuresDTO> dailyMeasureList, int level){
+    private List<String> getDaysWithFrequency(List<DailyMeasuresDTO> dailyMeasureList, int level) {
         int[][] levels = {{0, 1}, {2, 2}, {3, 3}, {4, 5000}};
         List<String> dates = new ArrayList<>();
 
-        for (DailyMeasuresDTO dailyMeasure : dailyMeasureList){
-            if(dailyMeasure.getMeasures().size() >= levels[level][0] && dailyMeasure.getMeasures().size() <= levels[level][1]){
+        for (DailyMeasuresDTO dailyMeasure : dailyMeasureList) {
+            if (dailyMeasure.getMeasures().size() >= levels[level][0] && dailyMeasure.getMeasures().size() <= levels[level][1]) {
                 dates.add(dailyMeasure.getDate());
             }
         }
@@ -193,26 +193,26 @@ public class MeasureService {
     }
 
 
-    private List<String> getFrequencyChart(List<Measure> measures){
+    private List<String> getFrequencyChart(List<Measure> measures) {
         int[] frequencysInt = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        for (Measure measure : measures){
+        for (Measure measure : measures) {
             final int sugarLevel = measure.getSugarLevel();
-            if(sugarLevel <= 50){
+            if (sugarLevel <= 50) {
                 frequencysInt[0]++;
-            } else if (sugarLevel <= 100){
+            } else if (sugarLevel <= 100) {
                 frequencysInt[1]++;
-            } else if (sugarLevel <= 150){
+            } else if (sugarLevel <= 150) {
                 frequencysInt[2]++;
-            } else if (sugarLevel <= 200){
+            } else if (sugarLevel <= 200) {
                 frequencysInt[3]++;
-            } else if (sugarLevel <= 250){
+            } else if (sugarLevel <= 250) {
                 frequencysInt[4]++;
-            } else if (sugarLevel <= 300){
+            } else if (sugarLevel <= 300) {
                 frequencysInt[5]++;
-            } else if (sugarLevel <= 350){
+            } else if (sugarLevel <= 350) {
                 frequencysInt[6]++;
-            } else if (sugarLevel <= 400){
+            } else if (sugarLevel <= 400) {
                 frequencysInt[7]++;
             } else {
                 frequencysInt[8]++;
@@ -221,7 +221,7 @@ public class MeasureService {
 
         List<String> frequencysString = new ArrayList<>();
 
-        for (int value : frequencysInt){
+        for (int value : frequencysInt) {
             frequencysString.add(Integer.toString(value));
         }
 

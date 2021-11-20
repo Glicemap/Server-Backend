@@ -1,7 +1,6 @@
 package com.glicemap.builder;
 
 import com.glicemap.dto.MeasureDTO;
-import com.glicemap.indicator.SituationsIndicator;
 import com.glicemap.model.Measure;
 import org.springframework.stereotype.Component;
 
@@ -55,7 +54,7 @@ public final class MeasureBuilder {
 
     public List<MeasureDTO> buildModelList(List<Measure> measures) {
         List<MeasureDTO> measuresDTO = new ArrayList<>();
-        for (Measure measure : measures){
+        for (Measure measure : measures) {
             measuresDTO.add(this.buildModel(measure));
         }
         return measuresDTO;
