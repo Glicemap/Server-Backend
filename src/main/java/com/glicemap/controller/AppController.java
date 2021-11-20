@@ -65,10 +65,22 @@ public class AppController {
             @ApiResponse(code = 200, message = "Cadastro efetuado"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
+    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
     public ResponseEntity<Boolean> userSignUp(@RequestBody UserDTO userDTO) throws BaseBusinessException, ParseException {
-        logger.info("AppController - /signUp called! UserDTO = [{}]", userDTO);
+        logger.info("AppController - /sign-up called! UserDTO = [{}]", userDTO);
         return new ResponseEntity<>(userService.signUp(userDTO), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    @ApiOperation(value = "Retorna um json com informações do médico e do usuário")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Retorna json com informações"),
+            @ApiResponse(code = 500, message = "Houve uma exceção")
+    })
+    @RequestMapping(value = "/info", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<UserMedicInfoDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
+        logger.info("AppController - get /info called! documentNumber = [{}]", documentNumber);
+        return new ResponseEntity<>(userService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
     @Transactional
@@ -77,9 +89,9 @@ public class AppController {
             @ApiResponse(code = 200, message = "Atualização efetuada"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/updateInfo", method = RequestMethod.PUT)
+    @RequestMapping(value = "/info", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> updateInfo(@RequestBody UserDTO userDTO) throws BaseBusinessException, ParseException {
-        logger.info("AppController - /updateInfo called! UserDTO = [{}]", userDTO);
+        logger.info("AppController - put /info called! UserDTO = [{}]", userDTO);
         return new ResponseEntity<>(userService.updateInfo(userDTO), HttpStatus.OK);
     }
 
@@ -89,9 +101,9 @@ public class AppController {
             @ApiResponse(code = 200, message = "Médico desvinculado"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/deleteMedic", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/medic", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteMedic(@RequestHeader String documentNumber) throws BaseBusinessException {
-        logger.info("AppController - /deleteMedic called! documentNumber = [{}]", documentNumber);
+        logger.info("AppController - delete /medic called! documentNumber = [{}]", documentNumber);
         return new ResponseEntity<>(userService.deleteMedic(documentNumber), HttpStatus.OK);
     }
 
@@ -101,9 +113,9 @@ public class AppController {
             @ApiResponse(code = 200, message = "Médico vinculado"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/addMedic", method = RequestMethod.PUT)
+    @RequestMapping(value = "/medic", method = RequestMethod.POST)
     public ResponseEntity<Boolean> addMedic(@RequestHeader String documentNumber, @RequestHeader String code) throws BaseBusinessException {
-        logger.info("AppController - /addMedic called! documentNumber = [{}], code = [{}]", documentNumber, code);
+        logger.info("AppController - post /medic called! documentNumber = [{}], code = [{}]", documentNumber, code);
         return new ResponseEntity<>(userService.addMedic(documentNumber, code), HttpStatus.OK);
     }
 
@@ -113,11 +125,11 @@ public class AppController {
             @ApiResponse(code = 200, message = "Retorna a lista de datas"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/searchMeasures/month", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/measures/month", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<DatesWithMeasuresDTO> searchMeasuresMonth(@RequestHeader("documentNumber") String documentNumber,
                                                                     @RequestHeader("date") String date) throws ParseException {
 
-        logger.info("AppController - /searchMeasures/month called! documentNumber = [{}], date = [{}]", documentNumber, date);
+        logger.info("AppController - /measures/month called! documentNumber = [{}], date = [{}]", documentNumber, date);
         return new ResponseEntity<>(measureService.getDaysWithMeasure(documentNumber, date), HttpStatus.OK);
     }
 
@@ -127,11 +139,11 @@ public class AppController {
             @ApiResponse(code = 200, message = "Retorna a lista de registros"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/searchMeasures/day", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/measures/day", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<DailyMeasuresDTO> searchMeasuresDay(@RequestHeader("documentNumber") String documentNumber,
                                                               @RequestHeader("date") String date) throws ParseException {
 
-        logger.info("AppController - /searchMeasures/day called! documentNumber = [{}], date = [{}]", documentNumber, date);
+        logger.info("AppController - /measures/day called! documentNumber = [{}], date = [{}]", documentNumber, date);
         return new ResponseEntity<>(measureService.getDailyMeasures(documentNumber, date), HttpStatus.OK);
     }
 
@@ -142,22 +154,10 @@ public class AppController {
             @ApiResponse(code = 503, message = "Não foi possivel inserir registro na base"),
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
-    @RequestMapping(value = "/postMeasure", method = RequestMethod.POST)
+    @RequestMapping(value = "/measures", method = RequestMethod.POST)
     public ResponseEntity<Boolean> postMeasure(@RequestBody PostMeasureDTO postMeasureDTO) throws ParseException {
-        logger.info("AppController - /postMeasure called! PostMeasureDTO = [{}]", postMeasureDTO);
+        logger.info("AppController - post /measures called! PostMeasureDTO = [{}]", postMeasureDTO);
         return new ResponseEntity<>(measureService.postMeasure(postMeasureDTO), HttpStatus.OK);
-    }
-
-    @Transactional(readOnly = true)
-    @ApiOperation(value = "Retorna um json com informações do médico e do usuário")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Retorna json com informações"),
-            @ApiResponse(code = 500, message = "Houve uma exceção")
-    })
-    @RequestMapping(value = "/getInfo", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<UserMedicInfoDTO> getUserInfo(@RequestHeader("documentNumber") String documentNumber) {
-        logger.info("AppController - /getInfo/user called! documentNumber = [{}]", documentNumber);
-        return new ResponseEntity<>(userService.getUserMedicInfo(documentNumber), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
@@ -166,13 +166,13 @@ public class AppController {
 //            @ApiResponse(code = 200, message = "Retorna o relatório em pdf"),
 //            @ApiResponse(code = 500, message = "Houve uma exceção")
 //    })
-    @RequestMapping(value = "/exportReport", method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "/report", method = RequestMethod.GET, produces = "application/pdf")
     public void exportReport(HttpServletResponse response,
                              @RequestHeader("documentNumber") String documentNumber,
                              @RequestHeader("dateBegin") String dateBegin,
                              @RequestHeader("dateEnd") String dateEnd) throws BaseBusinessException, ParseException {
 
-        logger.info("AppController - /exportReport called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
+        logger.info("AppController - /report called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
 
         response.setContentType("application/pdf");
 

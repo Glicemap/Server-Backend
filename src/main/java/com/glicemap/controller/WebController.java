@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,7 +53,7 @@ public class WebController {
 
     @ApiOperation(value = "Efetua login de médico")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "REsultado do login")
+            @ApiResponse(code = 200, message = "Resultado do login")
     })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<Boolean> login(@RequestBody LoginDTO loginDTO) {
@@ -75,9 +76,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna código de convite")
     })
-    @RequestMapping(value = "/get-new-code", method = RequestMethod.GET)
+    @RequestMapping(value = "/new-code", method = RequestMethod.GET)
     public ResponseEntity<String> getNewCode(@RequestHeader String CRM) {
-        logger.info("WebController - /get-new-code called! CRM [{}]", CRM);
+        logger.info("WebController - /new-code called! CRM [{}]", CRM);
         return new ResponseEntity<>(medicInviteService.generateCode(CRM), HttpStatus.OK);
     }
 
@@ -85,19 +86,19 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna lista de pacientes")
     })
-    @RequestMapping(value = "/get-patients", method = RequestMethod.GET)
-    public ResponseEntity<PatientsListDTO> getPatients(@RequestBody GetPatientsDTO getPatientsDTO) {
-        logger.info("WebController - /get-patients called GetPatientsDTO [{}]", getPatientsDTO);
-        return new ResponseEntity<>(medicService.getPatients(getPatientsDTO), HttpStatus.OK);
+    @RequestMapping(value = "/patients", method = RequestMethod.GET)
+    public ResponseEntity<PatientsListDTO> getPatients(@RequestHeader String CRM, @RequestBody GetPatientsDTO getPatientsDTO) throws ParseException {
+        logger.info("WebController - Get /patients called GetPatientsDTO [{}]", getPatientsDTO);
+        return new ResponseEntity<>(medicService.getPatients(CRM, getPatientsDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca medições de paciente")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna as medições do paciente")
     })
-    @RequestMapping(value = "/get-patient", method = RequestMethod.GET)
-    public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@RequestBody GetPatientDTO getPatientDTO) {
-        logger.info("WebController - /get-patient called GetPatientDTO [{}]", getPatientDTO);
+    @RequestMapping(value = "/patients/{documentNumber}", method = RequestMethod.GET)
+    public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@PathParam("documentNumber") String documentNumber, @RequestHeader String CRM, @RequestBody GetPatientDTO getPatientDTO) {
+        logger.info("WebController - /patient/{} called GetPatientDTO [{}]", documentNumber, getPatientDTO);
         return new ResponseEntity<>(measureService.getMeasuresInfo(getPatientDTO), HttpStatus.OK);
     }
 
@@ -105,9 +106,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna lista de notificações")
     })
-    @RequestMapping(value = "/get-notifications", method = RequestMethod.GET)
+    @RequestMapping(value = "/notifications", method = RequestMethod.GET)
     public ResponseEntity<NotificationsDTO> getNotifications(@RequestHeader String CRM) {
-        logger.info("WebController - /get-notifications called CRM [{}]", CRM);
+        logger.info("WebController - get /notifications called CRM [{}]", CRM);
         return new ResponseEntity<>(notificationService.getNotifications(CRM), HttpStatus.OK);
     }
 
@@ -115,9 +116,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Marcou notificações como lidas")
     })
-    @RequestMapping(value = "/read-notifications", method = RequestMethod.PUT)
+    @RequestMapping(value = "/notifications", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> readNotifications(@RequestBody NotificationsIdsDTO notificationsIdsDTO) {
-        logger.info("WebController - /read-notifications called NotificationsIdsDTO [{}]", notificationsIdsDTO);
+        logger.info("WebController - put /notifications called NotificationsIdsDTO [{}]", notificationsIdsDTO);
         return new ResponseEntity<>(notificationService.readNotifications(notificationsIdsDTO), HttpStatus.OK);
     }
 
@@ -125,9 +126,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Deletou as notificações")
     })
-    @RequestMapping(value = "/delete-notifications", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/notifications", method = RequestMethod.DELETE)
     public ResponseEntity<Boolean> deleteNotifications(@RequestBody NotificationsIdsDTO notificationsIdsDTO) {
-        logger.info("WebController - /delete-notifications called NotificationsIdsDTO [{}]", notificationsIdsDTO);
+        logger.info("WebController - delete /notifications called NotificationsIdsDTO [{}]", notificationsIdsDTO);
         return new ResponseEntity<>(notificationService.deleteNotifications(notificationsIdsDTO), HttpStatus.OK);
     }
 
@@ -135,9 +136,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna dados do médico")
     })
-    @RequestMapping(value = "/get-settings", method = RequestMethod.GET)
+    @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public ResponseEntity<MedicDTO> getSettings(@RequestHeader String CRM) {
-        logger.info("WebController - /get-settings called CRM [{}]", CRM);
+        logger.info("WebController - get /settings called CRM [{}]", CRM);
         return new ResponseEntity<>(medicService.getMedicDTO(CRM), HttpStatus.OK);
     }
 
@@ -145,9 +146,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Atualizou dados do médico")
     })
-    @RequestMapping(value = "/update-settings", method = RequestMethod.PUT)
+    @RequestMapping(value = "/settings", method = RequestMethod.PUT)
     public ResponseEntity<Boolean> updateSettings(@RequestBody MedicDTO medicDTO) {
-        logger.info("WebController - /update-settings called MedicDTO [{}]", medicDTO);
+        logger.info("WebController - put /settings called MedicDTO [{}]", medicDTO);
         return new ResponseEntity<>(medicService.updateData(medicDTO), HttpStatus.OK);
     }
 
@@ -157,13 +158,13 @@ public class WebController {
 //            @ApiResponse(code = 200, message = "Retorna o relatório em pdf"),
 //            @ApiResponse(code = 500, message = "Houve uma exceção")
 //    })
-    @RequestMapping(value = "/exportReport", method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "/report", method = RequestMethod.GET, produces = "application/pdf")
     public void exportReport(HttpServletResponse response,
                              @RequestHeader("documentNumber") String documentNumber,
                              @RequestHeader("dateBegin") String dateBegin,
                              @RequestHeader("dateEnd") String dateEnd) throws BaseBusinessException, ParseException {
 
-        logger.info("WebController - /exportReport called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
+        logger.info("WebController - /report called! documentNumber = [{}], dateBegin = [{}], dateEnd = [{}]", documentNumber, dateBegin, dateEnd);
 
         response.setContentType("application/pdf");
 
