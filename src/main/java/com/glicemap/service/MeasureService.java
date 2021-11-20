@@ -48,7 +48,9 @@ public class MeasureService {
         List<String> listDates = new ArrayList<>();
 
         for (Measure measure : measures) {
-            listDates.add(measure.getCreatedDate().toString());
+            if (!listDates.contains(measure.getCreatedDate().toString())){
+                listDates.add(measure.getCreatedDate().toString());
+            }
         }
 
         return datesWithMeasuresBuilder.setDates(listDates).build();
@@ -62,10 +64,10 @@ public class MeasureService {
 
         for (Measure measure : measures) {
             MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
-                    .setObservations(measure.getObservations())
-                    .setSituation(measure.getSituation().getSituation())
-                    .setSugarLevel(Integer.toString(measure.getSugarLevel()))
-                    .build();
+                                                  .setObservations(measure.getObservations())
+                                                  .setSituation(measure.getSituation().getSituation())
+                                                  .setSugarLevel(Integer.toString(measure.getSugarLevel()))
+                                                  .build();
             measuresDTOS.add(measureDTO);
         }
 
@@ -133,6 +135,31 @@ public class MeasureService {
         }
 
         return dailyMeasuresList;
+    }
+
+    public int getMeasuresPercentageFromLastMonth(User user) {
+        float countDaysWithMeasure = 0;
+        java.util.Date endDate = new java.util.Date(System.currentTimeMillis());
+
+        // pega dia de um mes atras
+        Calendar c = Calendar.getInstance();
+        c.setTime(endDate);
+        c.add(Calendar.MONTH, -1);
+        java.util.Date startDate = c.getTime();
+
+        //busca todos os dias
+        List<Measure> measures = measureRepository.findByDateInterval(user, new Date(startDate.getTime()), new Date(endDate.getTime()));
+
+        //conta os dias com medicao sem repetir
+        List<String> listDates = new ArrayList<>();
+        for (Measure measure : measures) {
+            if (!listDates.contains(measure.getCreatedDate().toString())){
+                listDates.add(measure.getCreatedDate().toString());
+                countDaysWithMeasure++;
+            }
+        }
+
+        return Math.round((countDaysWithMeasure/30)*100);
     }
 
     private Date stringToDate(String dateString) throws ParseException {

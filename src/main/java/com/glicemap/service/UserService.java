@@ -7,6 +7,7 @@ import com.glicemap.dto.LoginDTO;
 import com.glicemap.dto.UserDTO;
 import com.glicemap.dto.UserMedicInfoDTO;
 import com.glicemap.exception.BaseBusinessException;
+import com.glicemap.model.Medic;
 import com.glicemap.model.MedicInvite;
 import com.glicemap.model.Notification;
 import com.glicemap.model.User;
@@ -14,11 +15,13 @@ import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -188,6 +191,14 @@ public class UserService {
             this.updateUser(user, userDTO);
             return Boolean.TRUE;
         }
+    }
+
+    public List<User> findByNameLikeAndDatesAndMedic(Medic medic, String nome, Date dateFrom, Date dateTo){
+        return userRepository.findByNameLikeAndDatesAndMedic(medic, nome, dateFrom, dateTo);
+    }
+
+    public List<User> findByDatesAndMedic(Medic medic, Date dateFrom, Date dateTo){
+        return userRepository.findByDatesAndMedic(medic, dateFrom, dateTo);
     }
 
     private void updateUser(User user, UserDTO userDTO) throws ParseException {

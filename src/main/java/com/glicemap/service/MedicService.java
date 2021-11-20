@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -36,7 +38,10 @@ public class MedicService {
     private MedicRepository medicRepository;
 
     @Autowired
-    private MedicInviteService medicInviteService;
+    private UserService userService;
+
+    @Autowired
+    private MeasureService measureService;
 
     public Medic getMedic(String CRM) {
         logger.info("MedicService - getMedic - Getting info from CRM [{}]", CRM);
@@ -122,34 +127,88 @@ public class MedicService {
         medicRepository.save(medic);
     }
 
-    public PatientsListDTO getPatients(GetPatientsDTO getPatientsDTO) {
-        List<PatientPreviewDTO> patients = new ArrayList<>();
+    public PatientsListDTO getPatients(String CRM, GetPatientsDTO getPatientsDTO) throws ParseException {
+        //Busca lista de pacientes usando filtros de nome e datas caso necessarios
+        List<User> patientList = this.getListPatientFiltered(CRM, getPatientsDTO);
 
-        patients.add(patientPreviewBuilder.setName("Marco Aurélio") //
-                .setFrequency(FrequencyIndicator.low) //
-                .setPercentage("2") //
-                .setDocumentNumber("45685145723") //
-                .build());
+        //montar DTO calculando frequências e porcentagens
+        PatientsListDTO patientsList = this.buildPatientWithFrequencyAndPercentage(patientList);
 
-        patients.add(patientPreviewBuilder.setName("Brian Nunes") //
-                .setFrequency(FrequencyIndicator.high) //
-                .setPercentage("97") //
-                .setDocumentNumber("12345678956") //
-                .build());
+        //retorna filtrado por frequência ou não a depender do que foi pedido
+        if (getPatientsDTO.getFrequency() == null){
+            return patientsList;
+        } else {
+            return filterFrequency(patientsList, getPatientsDTO.getFrequency());
+        }
+    }
 
-        patients.add(patientPreviewBuilder.setName("Victor Padula") //
-                .setFrequency(FrequencyIndicator.medium) //
-                .setPercentage("67") //
-                .setDocumentNumber("78456213895") //
-                .build());
+    private List<User> getListPatientFiltered(String CRM, GetPatientsDTO getPatientsDTO) throws ParseException {
+        Medic medic = this.getMedic(CRM);
 
+        Date dateFrom;
+        Date dateTo;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-        patients.add(patientPreviewBuilder.setName("Gustavo Trivelatto") //
-                .setFrequency(FrequencyIndicator.high) //
-                .setPercentage("88") //
-                .setDocumentNumber("45678165222") //
-                .build());
+        if(getPatientsDTO.getFrom() == null){
+            dateFrom = new Date(sdf.parse("01-01-2000").getTime());
+        } else {
+            dateFrom = new Date(sdf.parse(getPatientsDTO.getFrom()).getTime());
+        }
 
-        return patientsListBuilder.setPatients(patients).build();
+        if(getPatientsDTO.getTo() == null){
+            dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
+        } else {
+            dateTo = new Date(sdf.parse(getPatientsDTO.getTo()).getTime());
+        }
+
+        List<User> patientList;
+        if (getPatientsDTO.getName() != null){
+            patientList = userService.findByNameLikeAndDatesAndMedic(medic, getPatientsDTO.getName().toLowerCase(), dateFrom, dateTo);
+        } else {
+            patientList = userService.findByDatesAndMedic(medic, dateFrom, dateTo);
+        }
+
+        return patientList;
+    }
+
+    private PatientsListDTO buildPatientWithFrequencyAndPercentage(List<User> patients){
+        List<PatientPreviewDTO> patientsList = new ArrayList<>();
+
+        for (User patient : patients){
+            int percentage = measureService.getMeasuresPercentageFromLastMonth(patient);
+            String percentageString = Integer.toString(percentage);
+
+            FrequencyIndicator frequency;
+
+            if(percentage > 80){
+                frequency = FrequencyIndicator.high;
+            } else if (percentage > 60){
+                frequency = FrequencyIndicator.medium;
+            } else {
+                frequency = FrequencyIndicator.low;
+            }
+
+            PatientPreviewDTO patientPreviewDTO = patientPreviewBuilder.setDocumentNumber(patient.getDocumentNumber())
+                                                                       .setName(patient.getName()+" "+patient.getLastName())
+                                                                       .setPercentage(percentageString)
+                                                                       .setFrequency(frequency)
+                                                                       .build();
+
+            patientsList.add(patientPreviewDTO);
+        }
+
+        return patientsListBuilder.setPatients(patientsList).build();
+    }
+
+    private PatientsListDTO filterFrequency(PatientsListDTO patients, FrequencyIndicator frequency){
+        List<PatientPreviewDTO> filteredPatientsList = new ArrayList<>();
+
+        for (PatientPreviewDTO patient : patients.getPatients()){
+            if (frequency.equals(patient.getFrequency())){
+                filteredPatientsList.add(patient);
+            }
+        }
+
+        return patientsListBuilder.setPatients(filteredPatientsList).build();
     }
 }
