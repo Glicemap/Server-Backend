@@ -27,7 +27,7 @@ public class Notification {
     @JoinColumn(name = "cpf_paciente")
     private User user;
 
-    Notification(){
+    Notification() {
 
     }
 
@@ -51,10 +51,6 @@ public class Notification {
         return status;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
     public Medic getMedic() {
         return medic;
     }
@@ -73,6 +69,10 @@ public class Notification {
 
     public boolean isStatus() {
         return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public boolean isRead() {

@@ -48,7 +48,7 @@ public class MeasureService {
         List<String> listDates = new ArrayList<>();
 
         for (Measure measure : measures) {
-            if (!listDates.contains(measure.getCreatedDate().toString())){
+            if (!listDates.contains(measure.getCreatedDate().toString())) {
                 listDates.add(measure.getCreatedDate().toString());
             }
         }
@@ -64,10 +64,10 @@ public class MeasureService {
 
         for (Measure measure : measures) {
             MeasureDTO measureDTO = measureBuilder.setInsulin(Integer.toString(measure.getInsulin()))
-                                                  .setObservations(measure.getObservations())
-                                                  .setSituation(measure.getSituation().getSituation())
-                                                  .setSugarLevel(Integer.toString(measure.getSugarLevel()))
-                                                  .build();
+                    .setObservations(measure.getObservations())
+                    .setSituation(measure.getSituation().getSituation())
+                    .setSugarLevel(Integer.toString(measure.getSugarLevel()))
+                    .build();
             measuresDTOS.add(measureDTO);
         }
 
@@ -153,13 +153,13 @@ public class MeasureService {
         //conta os dias com medicao sem repetir
         List<String> listDates = new ArrayList<>();
         for (Measure measure : measures) {
-            if (!listDates.contains(measure.getCreatedDate().toString())){
+            if (!listDates.contains(measure.getCreatedDate().toString())) {
                 listDates.add(measure.getCreatedDate().toString());
                 countDaysWithMeasure++;
             }
         }
 
-        return Math.round((countDaysWithMeasure/30)*100);
+        return Math.round((countDaysWithMeasure / 30) * 100);
     }
 
     private Date stringToDate(String dateString) throws ParseException {

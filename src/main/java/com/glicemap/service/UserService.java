@@ -15,7 +15,6 @@ import com.glicemap.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -193,11 +192,11 @@ public class UserService {
         }
     }
 
-    public List<User> findByNameLikeAndDatesAndMedic(Medic medic, String nome, Date dateFrom, Date dateTo){
+    public List<User> findByNameLikeAndDatesAndMedic(Medic medic, String nome, Date dateFrom, Date dateTo) {
         return userRepository.findByNameLikeAndDatesAndMedic(medic, nome, dateFrom, dateTo);
     }
 
-    public List<User> findByDatesAndMedic(Medic medic, Date dateFrom, Date dateTo){
+    public List<User> findByDatesAndMedic(Medic medic, Date dateFrom, Date dateTo) {
         return userRepository.findByDatesAndMedic(medic, dateFrom, dateTo);
     }
 
