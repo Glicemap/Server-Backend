@@ -86,9 +86,9 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna lista de pacientes")
     })
-    @RequestMapping(value = "/patients", method = RequestMethod.GET)
+    @RequestMapping(value = "/patients", method = RequestMethod.POST)
     public ResponseEntity<PatientsListDTO> getPatients(@RequestHeader String CRM, @RequestBody GetPatientsDTO getPatientsDTO) throws ParseException {
-        logger.info("WebController - Get /patients called GetPatientsDTO [{}]", getPatientsDTO);
+        logger.info("WebController - Post /patients called GetPatientsDTO [{}] CRM [{}]", getPatientsDTO, CRM);
         return new ResponseEntity<>(medicService.getPatients(CRM, getPatientsDTO), HttpStatus.OK);
     }
 
@@ -96,8 +96,8 @@ public class WebController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Retorna as medições do paciente")
     })
-    @RequestMapping(value = "/patients/{documentNumber}", method = RequestMethod.GET)
-    public ResponseEntity<PatientMeasuresInfoDTO> getPatients(@PathVariable("documentNumber") String documentNumber, @RequestHeader String CRM, @RequestBody GetPatientDTO getPatientDTO) throws ParseException {
+    @RequestMapping(value = "/patients/{documentNumber}", method = RequestMethod.POST)
+    public ResponseEntity<PatientMeasuresInfoDTO> getPatient(@PathVariable("documentNumber") String documentNumber, @RequestBody GetPatientDTO getPatientDTO) throws ParseException {
         logger.info("WebController - /patients/{} called GetPatientDTO [{}]", documentNumber, getPatientDTO);
         return new ResponseEntity<>(measureService.getMeasuresInfo(documentNumber, getPatientDTO), HttpStatus.OK);
     }
