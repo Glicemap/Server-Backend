@@ -140,7 +140,7 @@ public class MeasureService {
     }
 
     private Date stringToDate(String dateString) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date dateUtil = sdf.parse(dateString);
         return new Date(dateUtil.getTime());
     }
