@@ -152,6 +152,17 @@ public class WebController {
         return new ResponseEntity<>(medicService.updateData(medicDTO), HttpStatus.OK);
     }
 
+
+    @ApiOperation(value = "Atualiza senha do médico")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Atualizou senha do médico")
+    })
+    @RequestMapping(value = "/password", method = RequestMethod.PUT)
+    public ResponseEntity<Boolean> updatePassword(@RequestHeader String CRM, @RequestBody PasswordDTO passwordDTO) {
+        logger.info("WebController - put /password called PasswordDTO [{}] CRM [{}]", passwordDTO, CRM);
+        return new ResponseEntity<>(medicService.updatePassword(CRM, passwordDTO), HttpStatus.OK);
+    }
+
     @Transactional(readOnly = true)
     @ApiOperation(value = "Retorna um pdf no padrão das UBS do relatório glicemico no período informado")
 //    @ApiResponses({
