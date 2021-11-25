@@ -120,6 +120,29 @@ public class MedicService {
         }
     }
 
+    public Boolean updatePassword(String CRM, PasswordDTO passwordDTO) {
+        logger.info("MedicService - update Password - Updating password for CRM [{}]", CRM);
+        Medic medic = this.getMedic(CRM);
+        logger.info("MedicService - update Password - Medic found: [{}]", medic);
+        if (medic == null) {
+            logger.error("MedicService - Update Info Error - Medic not found - CRM [{}]", CRM);
+            throw new BaseBusinessException("UPDATE_INFO_ERROR_0002");
+        } else {
+            if(medic.getPassword().equals(passwordDTO.getOldPassword())){
+                this.updatePassword(medic, passwordDTO.getNewPassword());
+                return Boolean.TRUE;
+            } else {
+                throw new BaseBusinessException("UPDATE_PASSWORD_ERROR_0001");
+            }
+        }
+    }
+
+    private void updatePassword(Medic medic, String password) {
+        medic.setPassword(password);
+        logger.info("MedicService - update password - Medic updated: [{}]", medic);
+        medicRepository.save(medic);
+    }
+
     private void updateMedic(Medic medic, MedicDTO medicDTO) {
         medic.setName(medicDTO.getName());
         medic.setEmail(medicDTO.getEmail());
