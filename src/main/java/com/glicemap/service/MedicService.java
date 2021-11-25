@@ -61,19 +61,19 @@ public class MedicService {
         return txt == null || txt.isEmpty() || txt.trim().isEmpty();
     }
 
-    public Boolean login(LoginDTO loginDTO) {
+    public String login(LoginDTO loginDTO) {
         logger.info("MedicService - login - loginDTO [{}]", loginDTO);
         Medic medic = medicRepository.findByCRM(loginDTO.getLogin());
         if (medic == null) {
             medic = medicRepository.findByEmail(loginDTO.getLogin());
             if (medic == null) {
-                return Boolean.FALSE;
+                throw new BaseBusinessException("MEDIC_NOT_FOUND_LOGIN_ERROR_0001");
             }
         }
         if (medic.getPassword().equals(loginDTO.getPassword())) {
-            return Boolean.TRUE;
+            return medic.getCRM();
         } else {
-            return Boolean.FALSE;
+            throw new BaseBusinessException("PASSSWORD_UNMATCHED_LOGIN_ERROR_0001");
         }
     }
 

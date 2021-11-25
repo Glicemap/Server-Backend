@@ -56,7 +56,7 @@ public class WebController {
             @ApiResponse(code = 200, message = "Resultado do login")
     })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
         logger.info("WebController - /login called! - Login [{}]", loginDTO);
         return new ResponseEntity<>(medicService.login(loginDTO), HttpStatus.OK);
     }

@@ -63,18 +63,18 @@ public class UserService {
         }
     }
 
-    public Boolean login(LoginDTO loginDTO) {
+    public String login(LoginDTO loginDTO) {
         User usuario = userRepository.findByDocumentNumber(loginDTO.getLogin());
         if (usuario == null) {
             usuario = userRepository.findByEmail(loginDTO.getLogin());
             if (usuario == null) {
-                return Boolean.FALSE;
+                throw new BaseBusinessException("USER_NOT_FOUND_LOGIN_ERROR_0001");
             }
         }
         if (usuario.getPassword().equals(loginDTO.getPassword())) {
-            return Boolean.TRUE;
+            return usuario.getDocumentNumber();
         } else {
-            return Boolean.FALSE;
+            throw new BaseBusinessException("PASSSWORD_UNMATCHED_LOGIN_ERROR_0001");
         }
     }
 
