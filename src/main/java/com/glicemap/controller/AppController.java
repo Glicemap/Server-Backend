@@ -54,7 +54,7 @@ public class AppController {
             @ApiResponse(code = 500, message = "Houve uma exceção")
     })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> userLogin(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> userLogin(@RequestBody LoginDTO loginDTO) {
         logger.info("AppController - /login called! LoginDTO = [{}]", loginDTO);
         return new ResponseEntity<>(userService.login(loginDTO), HttpStatus.OK);
     }
