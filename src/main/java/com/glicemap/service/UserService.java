@@ -68,13 +68,13 @@ public class UserService {
         if (usuario == null) {
             usuario = userRepository.findByEmail(loginDTO.getLogin());
             if (usuario == null) {
-                throw new BaseBusinessException("USER_NOT_FOUND_LOGIN_ERROR_0001");
+                return "0";
             }
         }
         if (usuario.getPassword().equals(loginDTO.getPassword())) {
             return usuario.getDocumentNumber();
         } else {
-            throw new BaseBusinessException("PASSSWORD_UNMATCHED_LOGIN_ERROR_0001");
+            return "0";
         }
     }
 
