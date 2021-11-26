@@ -95,7 +95,7 @@ public class MeasureService {
     public List<DailyMeasuresDTO> getMeasuresFromInterval(String documentNumber, String dateBegin, String dateEnd) throws ParseException {
         User user = userService.getUser(documentNumber);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date endDate = sdf.parse(dateEnd);
         java.util.Date startDate = sdf.parse(dateBegin);
 

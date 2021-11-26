@@ -213,7 +213,7 @@ public class UserService {
     }
 
     private Date stringToDate(String dateString) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date dateUtil = sdf.parse(dateString);
         return new Date(dateUtil.getTime());
     }
