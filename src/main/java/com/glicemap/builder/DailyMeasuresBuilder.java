@@ -62,7 +62,7 @@ public class DailyMeasuresBuilder {
     }
 
     private String dateToString(Date date) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }
 }

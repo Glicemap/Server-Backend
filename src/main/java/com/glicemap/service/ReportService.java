@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -84,7 +85,7 @@ public class ReportService {
         for (DailyMeasuresDTO dailyMeasures : measures) {
             cell.setColspan(1);
             String[] dateSplited = dailyMeasures.getDate().split("-");
-            cell.setPhrase(new Phrase(String.format("%s/%s/%s", dateSplited[0], dateSplited[1], dateSplited[2]), font));
+            cell.setPhrase(new Phrase(String.format("%s/%s/%s", dateSplited[2], dateSplited[1], dateSplited[0]), font));
             table.addCell(cell);
 
             for (SituationsIndicator situation : SituationsIndicator.values()) {
@@ -114,7 +115,7 @@ public class ReportService {
         try {
             logger.info("ReportService- Building document! measures = [{}]", measures);
             document = new Document(PageSize.A4.rotate());
-
+            Collections.reverse(measures);
             PdfWriter.getInstance(document, response.getOutputStream());
 
             document.open();
