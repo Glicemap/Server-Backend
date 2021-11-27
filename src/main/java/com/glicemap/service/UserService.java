@@ -65,8 +65,10 @@ public class UserService {
 
     public String login(LoginDTO loginDTO) {
         User usuario = userRepository.findByDocumentNumber(loginDTO.getLogin());
+        logger.info("User found - user: {}", usuario != null);
         if (usuario == null) {
             usuario = userRepository.findByEmail(loginDTO.getLogin());
+            logger.info("User found - user: {}", usuario != null);
             if (usuario == null) {
                 return "0";
             }

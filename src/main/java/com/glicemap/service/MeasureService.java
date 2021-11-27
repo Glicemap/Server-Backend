@@ -53,7 +53,7 @@ public class MeasureService {
 
         for (Measure measure : measures) {
             if (!listDates.contains(measure.getCreatedDate().toString())) {
-                listDates.add(measure.getCreatedDate().toString());
+                listDates.add(this.dateToString(measure.getCreatedDate()));
             }
         }
 
@@ -140,9 +140,15 @@ public class MeasureService {
     }
 
     private Date stringToDate(String dateString) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date dateUtil = sdf.parse(dateString);
         return new Date(dateUtil.getTime());
+    }
+
+    private String dateToString(Date date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateUtil = sdf.format(date);
+        return dateUtil;
     }
 
     public PatientMeasuresInfoDTO getMeasuresInfo(String documentNumber, GetPatientDTO getPatientDTO) throws ParseException {
