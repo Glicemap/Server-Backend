@@ -184,5 +184,6 @@ public class AppController {
         response.setHeader(headerKey, headerValue);
 
         reportService.export(response, measureService.getMeasuresFromInterval(documentNumber, dateBegin, dateEnd));
+        reportService.export(response, measureService.getMeasuresFromInterval(documentNumber, dateBegin, dateEnd));
     }
 }

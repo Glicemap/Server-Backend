@@ -21,6 +21,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class UserService {
@@ -148,7 +149,8 @@ public class UserService {
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0001");
         }
 
-        MedicInvite medicInvite = medicInviteService.findByCode(code);
+        logger.info("Upper code: [{}]", code.toUpperCase());
+        MedicInvite medicInvite = medicInviteService.findByCode(code.toUpperCase());
         if (medicInvite == null) {
             logger.error("UserService - addMedic Error - Code not valid - code [{}]", code);
             throw new BaseBusinessException("ADD_MEDIC_ERROR_0002");
