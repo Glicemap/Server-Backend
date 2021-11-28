@@ -95,11 +95,25 @@ public class MeasureService {
     public List<DailyMeasuresDTO> getMeasuresFromInterval(String documentNumber, String dateBegin, String dateEnd) throws ParseException {
         User user = userService.getUser(documentNumber);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date endDate = sdf.parse(dateEnd);
-        java.util.Date startDate = sdf.parse(dateBegin);
+        Date dateFrom;
+        Date dateTo;
 
-        List<Measure> measures = measureRepository.findByDateInterval(user, new Date(startDate.getTime()), new Date(endDate.getTime()));
+        if (dateBegin == null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(this.stringToDate(dateEnd));
+            c.add(Calendar.MONTH, -1);
+            dateFrom = new Date(c.getTime().getTime());
+        } else {
+            dateFrom = this.stringToDate(dateBegin);
+        }
+
+        if (dateEnd == null) {
+            dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
+        } else {
+            dateTo = this.stringToDate(dateEnd);
+        }
+
+        List<Measure> measures = measureRepository.findByDateInterval(user, dateFrom, dateTo);
 
         return dailyMeasuresBuilder.buildModelList(measures);
     }

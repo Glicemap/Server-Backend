@@ -179,10 +179,8 @@ public class WebController {
 
         response.setContentType("application/pdf");
 
-        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=relatorio_" + currentDateTime + ".pdf";
+        String headerValue = "attachment; filename=relatorio.pdf";
 
         response.setHeader(headerKey, headerValue);
 
