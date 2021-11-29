@@ -14,7 +14,7 @@ import java.util.Random;
 @Service
 public class MedicInviteService {
 
-    Logger logger = LoggerFactory.getLogger(MedicInviteService.class);
+    final Logger logger = LoggerFactory.getLogger(MedicInviteService.class);
 
     @Autowired
     private MedicInviteRepository medicInviteRepository;

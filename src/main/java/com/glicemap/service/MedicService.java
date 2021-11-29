@@ -20,10 +20,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Service
 public class MedicService {
 
-    Logger logger = LoggerFactory.getLogger(MedicService.class);
+    final Logger logger = LoggerFactory.getLogger(MedicService.class);
 
     @Autowired
     private PatientPreviewBuilder patientPreviewBuilder;
@@ -128,7 +129,7 @@ public class MedicService {
             logger.error("MedicService - Update Info Error - Medic not found - CRM [{}]", CRM);
             throw new BaseBusinessException("UPDATE_INFO_ERROR_0002");
         } else {
-            if(medic.getPassword().equals(passwordDTO.getOldPassword())){
+            if (medic.getPassword().equals(passwordDTO.getOldPassword())) {
                 this.updatePassword(medic, passwordDTO.getNewPassword());
                 return Boolean.TRUE;
             } else {

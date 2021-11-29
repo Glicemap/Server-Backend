@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Service
 public class MeasureService {
-    Logger logger = LoggerFactory.getLogger(MeasureService.class);
+    final Logger logger = LoggerFactory.getLogger(MeasureService.class);
 
     @Autowired
     private DatesWithMeasuresBuilder datesWithMeasuresBuilder;

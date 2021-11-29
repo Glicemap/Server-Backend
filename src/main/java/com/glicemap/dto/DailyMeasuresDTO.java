@@ -2,6 +2,7 @@ package com.glicemap.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,7 +16,7 @@ public class DailyMeasuresDTO implements Serializable, Comparable<DailyMeasuresD
     private List<MeasureDTO> measures;
 
     @Override
-    public int compareTo(DailyMeasuresDTO dm) {
+    public int compareTo(@NotNull DailyMeasuresDTO dm) {
         if (this.date == null || dm.getDate() == null) {
             return 0;
         }

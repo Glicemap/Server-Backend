@@ -26,7 +26,7 @@ import java.util.Date;
 @RequestMapping("/app")
 public class AppController {
 
-    Logger logger = LoggerFactory.getLogger(AppController.class);
+    final Logger logger = LoggerFactory.getLogger(AppController.class);
 
     @Autowired
     private UserService userService;

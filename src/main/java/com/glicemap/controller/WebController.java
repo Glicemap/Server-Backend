@@ -15,17 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/web")
 public class WebController {
 
-    Logger logger = LoggerFactory.getLogger(WebController.class);
+    final Logger logger = LoggerFactory.getLogger(WebController.class);
 
     @Autowired
     private MedicService medicService;

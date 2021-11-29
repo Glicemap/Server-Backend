@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SituationService {
 
-    Logger logger = LoggerFactory.getLogger(SituationService.class);
+    final Logger logger = LoggerFactory.getLogger(SituationService.class);
 
     @Autowired
     private SituationRepository situationRepository;

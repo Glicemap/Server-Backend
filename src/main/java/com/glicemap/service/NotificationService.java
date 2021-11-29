@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 @Service
 public class NotificationService {
 
-    Logger logger = LoggerFactory.getLogger(NotificationService.class);
+    final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
     @Autowired
     private NotificationsBuilder notificationsBuilder;

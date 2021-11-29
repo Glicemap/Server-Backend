@@ -77,6 +77,7 @@ public final class UserBuilder {
         UserDTO userDTO = new UserDTO();
         userDTO.setDocumentNumber(documentNumber);
         userDTO.setName(name);
+        userDTO.setLastName(lastName);
         userDTO.setEmail(email);
         userDTO.setPassword(password);
         userDTO.setBirthdate(birthdate);

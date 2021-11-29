@@ -21,11 +21,11 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
+@SuppressWarnings("ALL")
 @Service
 public class UserService {
-    Logger logger = LoggerFactory.getLogger(UserService.class);
+    final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 
     @Autowired

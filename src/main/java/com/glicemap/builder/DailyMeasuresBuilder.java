@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +38,7 @@ public class DailyMeasuresBuilder {
         return dailyMeasuresDTO;
     }
 
-    public List<DailyMeasuresDTO> buildModelList(List<Measure> measures) throws ParseException {
+    public List<DailyMeasuresDTO> buildModelList(List<Measure> measures) {
         HashMap<Date, List<MeasureDTO>> dailyMeasures = new HashMap<>();
         List<DailyMeasuresDTO> dailyMeasuresListDTO = new ArrayList<>();
 
@@ -61,7 +60,7 @@ public class DailyMeasuresBuilder {
         return dailyMeasuresListDTO;
     }
 
-    private String dateToString(Date date) throws ParseException {
+    private String dateToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }

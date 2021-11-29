@@ -15,6 +15,7 @@ class GlicemapBackendApplicationTests {
     @MockBean
     private MedicRepository medicRepository;
 
+    @SuppressWarnings("EmptyMethod")
     @Test
     void contextLoads() {
     }

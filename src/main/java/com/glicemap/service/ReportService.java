@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class ReportService {
 
-    Logger logger = LoggerFactory.getLogger(ReportService.class);
+    final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     private void writeTableHeader(PdfPTable table) {
         PdfPCell cell = new PdfPCell();

@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class PasswordDTO implements Serializable {
 
     private static final long serialVersionUID = 7558610581342906719L;
-    
+
     @JsonProperty("oldPassword")
     private String oldPassword;
 
