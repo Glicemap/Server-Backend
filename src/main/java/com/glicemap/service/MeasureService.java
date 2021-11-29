@@ -99,20 +99,21 @@ public class MeasureService {
         Date dateFrom;
         Date dateTo;
 
+        if (dateEnd.isEmpty()) {
+            dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
+        } else {
+            dateTo = this.stringToDate(dateEnd);
+        }
+
         if (dateBegin.isEmpty()) {
             Calendar c = Calendar.getInstance();
-            c.setTime(this.stringToDate(dateEnd));
+            c.setTime(dateTo);
             c.add(Calendar.MONTH, -1);
             dateFrom = new Date(c.getTime().getTime());
         } else {
             dateFrom = this.stringToDate(dateBegin);
         }
 
-        if (dateEnd.isEmpty()) {
-            dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
-        } else {
-            dateTo = this.stringToDate(dateEnd);
-        }
 
         List<Measure> measures = measureRepository.findByDateInterval(user, dateFrom, dateTo);
 
