@@ -73,7 +73,7 @@ public class MedicService {
         if (medic.getPassword().equals(loginDTO.getPassword())) {
             return medic.getCRM();
         } else {
-            throw new BaseBusinessException("PASSSWORD_UNMATCHED_LOGIN_ERROR_0001");
+            throw new BaseBusinessException("PASSWORD_UNMATCHED_LOGIN_ERROR_0001");
         }
     }
 

@@ -98,7 +98,7 @@ public class MeasureService {
         Date dateFrom;
         Date dateTo;
 
-        if (dateBegin == null) {
+        if (dateBegin.isEmpty()) {
             Calendar c = Calendar.getInstance();
             c.setTime(this.stringToDate(dateEnd));
             c.add(Calendar.MONTH, -1);
@@ -107,7 +107,7 @@ public class MeasureService {
             dateFrom = this.stringToDate(dateBegin);
         }
 
-        if (dateEnd == null) {
+        if (dateEnd.isEmpty()) {
             dateTo = new Date(new java.util.Date(System.currentTimeMillis()).getTime());
         } else {
             dateTo = this.stringToDate(dateEnd);
@@ -159,10 +159,9 @@ public class MeasureService {
         return new Date(dateUtil.getTime());
     }
 
-    private String dateToString(Date date) throws ParseException {
+    private String dateToString(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dateUtil = sdf.format(date);
-        return dateUtil;
+        return sdf.format(date);
     }
 
     public PatientMeasuresInfoDTO getMeasuresInfo(String documentNumber, GetPatientDTO getPatientDTO) throws ParseException {
